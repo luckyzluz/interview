@@ -357,23 +357,363 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ### 10.Border-box与content-box的区别
 
+**⑴border-box**IE盒模型（怪异模式）
 
+**width || height = content + padding + border**
+
+> - 比如设定元素`width = 300px，padding = 20px，border=20px`，那么实际的内容区域宽度为`content = 300 - 20 * 2 - 20 * 2 = 220px`，整个盒子的宽度也就是它自己本身的`width = 300px`，也就是固定宽度后，如果增大border或者padding会压缩内容区的宽度；
+> - **整个盒子实际宽度和高度**就是我们设置的盒子的宽度和高度，只是padding和border自动限制到div内，实际的**内容**区域宽度和高度自适应改变了，但总宽度、高度不变。
+> - box-sizing:border-box是非常好用的样式属性，解脱了我们设置宽度和高度后再设置padding和border时重新计算设置宽度、高度的问题（因为我们可能需要保证整个盒子大小不变）。
+> - 占的总的位置大小为：margin + width || height
+
+**（2）content-box**W3C标准盒模型
+
+**width || height = content 内容区域**
+
+> - 比如设定元素`width = 300px，padding = 20px，border=20px`，那么实际的**内容**区域宽度为`content = 300px`；**整个盒子的宽度**为`300+20*2+20*2 = 380px`，也就是设定额外的padding或border会向外扩张元素的大小；
+> - 占的总的位置大小为：margin + border + padding + width || height（width || height 为 content 内容区域 ）
+> - 即若想占的总的位置大小不变，增加padding就得较少width || height
+
+**区别：**
+
+**content-box 的 width 不包括 padding 和 border**
+
+**border-box 的 width 包括 padding 和 border**
 
 ### 11.元素垂直居中
 
+**分成 块级元素 和 行内元素 进行总结**
+
+**(1)块级元素**
+
+①**flex布局**
+
+  具体的做法就是把父元素的属性：align-items(交叉轴单行对齐) 的值设置为 center
+
+②**绝对定位**
+
+（position: absolute）+ 负margin（这种方式需要知道元素的高）;
+
+（position: absolute）+ transform: translate()属性。
+
+**总结**： 
+
+  其实后面两种原理是相同的，通过绝对定位设置top为50%之后，再考虑处理元素自身的宽高；区别是负margin的方式需要知道具体的值才能设置，而transform: translate()设置百分比就可以，不需要知道具体的值。
+
+④**其他**
+
+如果只需要水平居中：给对应的块级元素设置 margin: 0 auto; 即可
+
+**（2）行内元素**
+
+①在父元素上设置：设置元素的 line-height 的值等于父元素的 height 的值实现垂直居中
+
+②在父元素上设置：display: table; 
+
+行内元素设置 display: table-cell; vertical-align: middle; 实现垂直居中
+
+③给行内元素一个没有宽高的父元素，利用 flex 布局使其父元素水平垂直居中即可
+
 ### 12.如何让chrome浏览器显示小于12px的文字
+
+ 针对谷歌浏览器内核，加webkit前缀，用transform:scale()这个属性进行缩放！
+
+```html
+<style>
+    p span{
+        font-size:10px;
+        -webkit-transform:scale(0.8);
+        display:block;
+    }
+</style>
+<p><span>测试10px</span></p>
+```
 
 ### 13.Css选择器有哪些，那些属性可以继承，优先级如何计算？Css3新增的伪类有哪些
 
-### 14.网页中呦大量图片加载很慢 你有什么办法进行优化？
+**CSS 选择符：**
+
+1.id选择器(# myid)
+
+2.类选择器(.myclassname)
+
+3.标签选择器(div, h1, p)
+
+4.相邻选择器(h1 + p)
+
+5.子选择器(ul > li)
+
+6.后代选择器(li a)
+
+7.通配符选择器( * )
+
+8.属性选择器(a[rel = "external"])
+
+9.伪类选择器(a: hover, li:nth-child)
+
+可继承的样式：
+
+1.font-size
+
+2.font-family
+
+3.color
+
+4.text-indent
+
+**不可继承的样式：**
+
+1.border
+
+2.padding
+
+3.margin
+
+4.width
+
+5.height
+
+**优先级算法：**
+
+1.优先级就近原则，同权重情况下样式定义最近者为准;
+
+2.载入样式以最后载入的定位为准;
+
+3.!important >  id > class > tag  
+
+4.important 比 内联优先级高，但内联比 id 要高
+
+**CSS3新增伪类举例：**
+
+**p:first-of-type** 选择属于其父元素的首个p元素。
+
+**p:last-of-type**  选择属于其父元素的最后 p元素。
+
+**p:only-of-type**  选择属于其父元素唯一的子元素的每个p元素。
+
+**p:only-child**   选择属于其父元素的唯一子元素的每个p元素。
+
+**p:nth-child(2)**  选择属于其父元素的第二个子元素的每个p元素。
+
+**:enabled**  选择启用的（常规）表单字段
+
+**:disabled **选择禁用的表单字段（`disabled=true`）
+
+**:checked** 选择已选中的表单字段（实际上只有复选框和单选按钮）。
+
+### 14.网页中有大量图片加载很慢 你有什么办法进行优化？
+
+1. 图片懒加载，滚动到相应位置才加载图片。原理是这个可以用js监控滚动的位置，当初图片位置出现或者即将出现在可视区域时，进行加载。
+2. 图片预加载，如果为幻灯片、相册等，将当前展示图片的前一张和后一张优先下载。
+3. 使用CSSsprite，SVGsprite，Iconfont、Base64等技术，如果图片为css图片的话。
+4. 如果图片过大，可以使用特殊编码的图片，加载时会先加载一张压缩的特别厉害的缩略图，以提高用户体验。
+
+------
 
 ### 15.行内元素/块级元素有哪些？
 
+**（1）行内元素：**一个行内元素只占据它**对应标签的边框所包含的空间。**
+
+<table>
+    <tr>
+        <td colspan="2"  style="text-align:center">行内元素</td>
+    </tr>
+    <tr>
+        <td>a</td><td>锚点</td>
+    </tr>
+    <tr>
+        <td>abbr</td><td>缩写</td>
+    </tr>
+    <tr>
+        <td>acronym</td><td>首字</td>
+    </tr>
+    <tr>
+        <td>b</td><td>粗体(不推荐)</td>
+    </tr>
+    <tr>
+        <td>cite</td><td>引用</td>
+    </tr>
+    <tr>
+        <td>br</td><td>换行</td>
+    </tr>
+    <tr>
+        <td>em</td><td>强调</td>
+    </tr>
+    <tr>
+        <td>font</td><td>字体设定(不推荐)</td>
+    </tr>
+    <tr>
+        <td>i</td><td>斜体</td>
+    </tr>
+    <tr>
+        <td>img</td><td>图片</td>
+    </tr>
+    <tr>
+        <td>input</td><td>输入框</td>
+    </tr>
+    <tr>
+        <td>label</td><td>表格标签</td>
+    </tr>
+    <tr>
+        <td>span</td><td>常用内联容器，定义文本内区块</td>
+    </tr>
+    <tr>
+        <td>strong</td><td>粗体强调</td>
+    </tr>
+    <tr>
+        <td>sub</td><td>下标</td>
+    </tr>
+    <tr>
+        <td>sup</td><td>上标</td>
+    </tr>
+    <tr>
+        <td>textarea</td><td>多行文本输入框</td>
+    </tr>
+    <tr>
+        <td>u</td><td>下划线</td>
+    </tr>
+</table>
+
+**(2)块级元素：** **占据其父元素（容器）的整个空间**，因此创建了一个“块”。通常浏览器会在块级元素前后另起一个**新行**。 |
+
+<table>
+    <tr>
+        <td colspan="2"  style="text-align:center">块级元素</td>
+    </tr>
+    <tr>
+        <td>div</td><td>常用块级容器，也是CSS layout的主要标签</td>
+    </tr>
+    <tr>
+        <td>dl</td><td>定义列表</td>
+    </tr>
+    <tr>
+        <td>form</td><td>交互表单</td>
+    </tr>
+    <tr>
+        <td>h1-h6</td><td>大、副、3、4、5、6标题</td>
+    </tr>
+    <tr>
+        <td>hr</td><td>水平分隔线</td>
+    </tr>
+    <tr>
+        <td>ol</td><td>有序表单</td>
+    </tr>
+    <tr>
+        <td>p</td><td>段落</td>
+    </tr>
+    <tr>
+        <td>table</td><td>表格</td>
+    </tr>
+    <tr>
+        <td>ul</td><td>无序列表</td>
+    </tr>
+    <tr>
+        <td>center</td><td>居中对齐块</td>
+    </tr>
+    <tr>
+        <td>dir</td><td>目录列表</td>
+    </tr>
+    <tr>
+        <td>fieldset</td><td>form控制组</td>
+    </tr>
+</table>
+
+**空元素**：< hr/> < br/> < img/> < input/> < link/> < meta/>
+< area>< base>< col>< command> < embed>< keygen>< param>< source>< track>< wbr>
+
+------
+
 ### 16.浏览器的标准模式和怪异模式区别？
+
+**标准模式：**是浏览器按照W3C标准解析执行代码，这样用规定的语法去渲染，就可以兼容各个浏览器，保证以正确的形式展示网页。
+**怪异模式：**是使用浏览器自己的方式解析执行代码，因为不同浏览器解析执行的方式不一样，所以我们称之为怪异模式。这样的弊端就是网页在各个浏览器显示的效果不一样，很难统一。
+
+------
 
 ### 17.Margin和padding在什么场合下使用
 
+- margin是用来隔开元素与元素的间距，padding是用来隔开元素与内容的间隔。
+- margin用来布局分开元素，使得元素与元素之间互不相干。
+- padding用来布局元素与内容之间的间隔，让内容（文字）与（包裹）元素之间有一段空间。
+
+**使用margin的场景：**
+1.若需要在border外侧添加空白时。
+2.空白处不需要背景（色）时。
+
+注：上下相连的两个盒子之间的空白，需要相互抵消时。如15px + 20px的margin，将得到20px的空白。
+
+**使用padding的场景：**
+1.需要在border内测添加空白时。
+2.空白处需要背景（色）时。
+
+注：上下相连的两个盒子之间的空白，希望等于两者之和时。如15px + 20px的padding，将得到35px的空白。
+
+**margin使用时应该注意：**
+
+  margin在垂直方向上相邻的值相同时会发生叠加，水平方向上相邻的值会相加。margin取负值时，在垂直方向上，两个元素的边界仍然会重叠。但是，此时一个为正值，一个为负值，并不是取其中较大的值，而是用正边界减去负边界的绝对值，也就是说，把正的边界值和负的边界值相加。
+
+------
+
 ### 18.弹性盒子布局属性有那些请简述?
+
+**（1）容器的属性**
+
+*<1>主轴的方向*
+
+```css
+flex-direction: row | row-reverse | column | column-reverse;
+row（默认值）：主轴为水平方向，起点在左端。
+row-reverse：主轴为水平方向，起点在右端。
+column：主轴为垂直方向，起点在上沿。
+column-reverse：主轴为垂直方向，起点在下沿。
+```
+
+*<2>换行属性*
+
+```css
+flex-wrap: nowrap | wrap | wrap-reverse;
+nowrap：//（默认）不换行。
+wrap：//换行，第一行在上方。
+wrap-reverse：//换行，第一行在下方。
+//简写：方向 + 换行
+flex-flow: <flex-direction> || <flex-wrap>;
+```
+
+*<3>主轴对齐方式*
+
+```css
+justify-content: flex-start | flex-end | center | space-between | space-around;
+flex-start（默认值）：左对齐
+flex-end：右对齐
+center： 居中
+space-between：两端对齐，项目之间的间隔都相等。
+space-around：每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。
+```
+
+*<4>交叉轴对齐方式*
+
+```css
+align-items: flex-start | flex-end | center | baseline | stretch;
+flex-start：交叉轴的起点对齐。
+flex-end：交叉轴的终点对齐。
+center：交叉轴的中点对齐。
+baseline: 项目的第一行文字的基线对齐。
+stretch（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度。
+```
+
+*<5>多根轴线对齐方式*
+
+```css
+align-content: flex-start | flex-end | center | space-between | space-around | stretch;
+flex-start：与交叉轴的起点对齐。
+flex-end：与交叉轴的终点对齐。
+center：与交叉轴的中点对齐。
+space-between：与交叉轴两端对齐，轴线之间的间隔平均分布。
+space-around：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。
+stretch（默认值）：轴线占满整个交叉轴。
+```
+
+
 
 ### 19.怎么实现标签的禁用
 

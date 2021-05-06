@@ -8,7 +8,7 @@ JPEG、GIF、PNG以及最近网页常见的webp
 
 CSS盒子模型也叫做框模型，具备内容(content)、填充(padding)、边框(border)、边界(margin)这些属性。在CSS中，每一个元素都被视为一个框，而每个框都有三个属性：
 
-> border:元素的边框（可能不可见），用于将框的边缘与其他框分开；
+> border:元素的边框(可能不可见)，用于将框的边缘与其他框分开；
 > margin：外边距，表示框的边缘与相邻框之间的距离，也称为页边空白；
 > padding:内边距，表示框内容和边框之间的空间。
 
@@ -104,7 +104,7 @@ CSS盒子模型也叫做框模型，具备内容(content)、填充(padding)、�
 用于划分页面上的不同区域,或者划分文章里不同的节
 <article></ article > 
 用来在页面中表示一套结构完整且独立的内容部分，可以用来呈现论坛的一个帖子，杂志或报纸中的一篇文章，一篇博客，用户提交的评论内容等。
-<figure> 标签规定独立的流内容（图像、图表、照片、代码等等）。
+<figure> 标签规定独立的流内容(图像、图表、照片、代码等等)。
 <figcaption> figure的子元素 用于对figure的内容 进行说明
 <time></time>
 <datalist></datalist>选项列表。与 input 元素配合使用，来定义 input 可能的值。
@@ -118,7 +118,7 @@ Open 属性默认展开
 **状态交互元素** 
 
 ```html
-progress元素 ：标签定义运行中的进度（进程）
+progress元素 ：标签定义运行中的进度(进程)
  <progress  value="0" max="100"></progress> 
 meter元素 ：标签定义度量衡。仅用于已知最大和最小值的度量。
  <meter  value="70" max="100" min="0"></meter>
@@ -148,7 +148,7 @@ formaction //在submit里定义提交地址
 
 ### 6.Css3新增的特性
 
-**（1）新选择器**
+**(1)新选择器**
 
 >  E:nth-child(n) 选择器匹配其父元素的第n个子元素，不论元素类型，n可以使数字，关键字，或公式
 
@@ -156,7 +156,7 @@ formaction //在submit里定义提交地址
 
 > E:frist-child 相对于父级做参考，“所有”子元素的第一个子元素，并且“位置”要对应
 
-> E：frist-of-type 相对于父级做参考，“特定类型”（E）的第一个子元素
+> E：frist-of-type 相对于父级做参考，“特定类型”(E)的第一个子元素
 
 > E：empty 选择没有子元素的每个E元素
 
@@ -168,7 +168,7 @@ formaction //在submit里定义提交地址
 >
 > E[abc*="def"] 选择adc属性值中包含子串"def"的所有元素
 
-**（2）文本**
+**(2)文本**
 
  **text-shadow**:2px 2px 8px #000;
 
@@ -250,7 +250,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 **Animation动画特效**
 
-**transform** ：translate（x,y) rotate(deg) scale(x,y)
+**transform** ：translate(x,y) rotate(deg) scale(x,y)
 
 **translate**:定义 2D 转换
 
@@ -258,7 +258,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 **rotate**:定义 2D 旋转，在参数中规定角度
 
-**skew**（倾斜）:定义沿着 X 和 Y 轴的 2D 倾斜转换
+**skew**(倾斜):定义沿着 X 和 Y 轴的 2D 倾斜转换
 
 **(9)flex布局**
 
@@ -310,7 +310,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 **两个方面的比较**
 
-- 是否脱离文档流（标准流）
+- 是否脱离文档流(标准流)
 - 相对于谁定位
 
 **比较**
@@ -335,9 +335,9 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ②**绝对定位**
 
-（position: absolute）+ 负margin（这种方式需要知道元素的宽高）;
+(position: absolute)+ 负margin(这种方式需要知道元素的宽高);
 
-（position: absolute）+ transform: translate()属性。
+(position: absolute)+ transform: translate()属性。
 
 **总结**： 
 
@@ -347,7 +347,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 如果只需要水平居中：给对应的块级元素设置 margin: 0 auto; 即可
 
-**（2）行内元素**
+**(2)行内元素**
 
 ①在父元素上设置：text-align: center; 实现水平居中；设置元素的 line-height 的值等于父元素的 height 的值实现垂直居中，这应该是我们平时用的比较多的一种
 
@@ -357,21 +357,21 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ### 10.Border-box与content-box的区别
 
-**⑴border-box**IE盒模型（怪异模式）
+**⑴border-box**IE盒模型(怪异模式)
 
 **width || height = content + padding + border**
 
 > - 比如设定元素`width = 300px，padding = 20px，border=20px`，那么实际的内容区域宽度为`content = 300 - 20 * 2 - 20 * 2 = 220px`，整个盒子的宽度也就是它自己本身的`width = 300px`，也就是固定宽度后，如果增大border或者padding会压缩内容区的宽度；
 > - **整个盒子实际宽度和高度**就是我们设置的盒子的宽度和高度，只是padding和border自动限制到div内，实际的**内容**区域宽度和高度自适应改变了，但总宽度、高度不变。
-> - box-sizing:border-box是非常好用的样式属性，解脱了我们设置宽度和高度后再设置padding和border时重新计算设置宽度、高度的问题（因为我们可能需要保证整个盒子大小不变）。
+> - box-sizing:border-box是非常好用的样式属性，解脱了我们设置宽度和高度后再设置padding和border时重新计算设置宽度、高度的问题(因为我们可能需要保证整个盒子大小不变)。
 > - 占的总的位置大小为：margin + width || height
 
-**（2）content-box**W3C标准盒模型
+**(2)content-box**W3C标准盒模型
 
 **width || height = content 内容区域**
 
 > - 比如设定元素`width = 300px，padding = 20px，border=20px`，那么实际的**内容**区域宽度为`content = 300px`；**整个盒子的宽度**为`300+20*2+20*2 = 380px`，也就是设定额外的padding或border会向外扩张元素的大小；
-> - 占的总的位置大小为：margin + border + padding + width || height（width || height 为 content 内容区域 ）
+> - 占的总的位置大小为：margin + border + padding + width || height(width || height 为 content 内容区域 )
 > - 即若想占的总的位置大小不变，增加padding就得较少width || height
 
 **区别：**
@@ -392,9 +392,9 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ②**绝对定位**
 
-（position: absolute）+ 负margin（这种方式需要知道元素的高）;
+(position: absolute)+ 负margin(这种方式需要知道元素的高);
 
-（position: absolute）+ transform: translate()属性。
+(position: absolute)+ transform: translate()属性。
 
 **总结**： 
 
@@ -404,7 +404,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 如果只需要水平居中：给对应的块级元素设置 margin: 0 auto; 即可
 
-**（2）行内元素**
+**(2)行内元素**
 
 ①在父元素上设置：设置元素的 line-height 的值等于父元素的 height 的值实现垂直居中
 
@@ -495,11 +495,11 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 **p:nth-child(2)**  选择属于其父元素的第二个子元素的每个p元素。
 
-**:enabled**  选择启用的（常规）表单字段
+**:enabled**  选择启用的(常规)表单字段
 
-**:disabled **选择禁用的表单字段（`disabled=true`）
+**:disabled **选择禁用的表单字段(`disabled=true`)
 
-**:checked** 选择已选中的表单字段（实际上只有复选框和单选按钮）。
+**:checked** 选择已选中的表单字段(实际上只有复选框和单选按钮)。
 
 ### 14.网页中有大量图片加载很慢 你有什么办法进行优化？
 
@@ -512,7 +512,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ### 15.行内元素/块级元素有哪些？
 
-**（1）行内元素：**一个行内元素只占据它**对应标签的边框所包含的空间。**
+**(1)行内元素：**一个行内元素只占据它**对应标签的边框所包含的空间。**
 
 <table>
     <tr>
@@ -574,7 +574,8 @@ background-image:radial-gradient(120px at center center,yellow,green)
     </tr>
 </table>
 
-**(2)块级元素：** **占据其父元素（容器）的整个空间**，因此创建了一个“块”。通常浏览器会在块级元素前后另起一个**新行**。 |
+
+**(2)块级元素：** **占据其父元素(容器)的整个空间**，因此创建了一个“块”。通常浏览器会在块级元素前后另起一个**新行**。 |
 
 <table>
     <tr>
@@ -618,6 +619,7 @@ background-image:radial-gradient(120px at center center,yellow,green)
     </tr>
 </table>
 
+
 **空元素**：< hr/> < br/> < img/> < input/> < link/> < meta/>
 < area>< base>< col>< command> < embed>< keygen>< param>< source>< track>< wbr>
 
@@ -634,17 +636,17 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 - margin是用来隔开元素与元素的间距，padding是用来隔开元素与内容的间隔。
 - margin用来布局分开元素，使得元素与元素之间互不相干。
-- padding用来布局元素与内容之间的间隔，让内容（文字）与（包裹）元素之间有一段空间。
+- padding用来布局元素与内容之间的间隔，让内容(文字)与(包裹)元素之间有一段空间。
 
 **使用margin的场景：**
 1.若需要在border外侧添加空白时。
-2.空白处不需要背景（色）时。
+2.空白处不需要背景(色)时。
 
 注：上下相连的两个盒子之间的空白，需要相互抵消时。如15px + 20px的margin，将得到20px的空白。
 
 **使用padding的场景：**
 1.需要在border内测添加空白时。
-2.空白处需要背景（色）时。
+2.空白处需要背景(色)时。
 
 注：上下相连的两个盒子之间的空白，希望等于两者之和时。如15px + 20px的padding，将得到35px的空白。
 
@@ -656,52 +658,50 @@ background-image:radial-gradient(120px at center center,yellow,green)
 
 ### 18.弹性盒子布局属性有那些请简述?
 
-**（1）容器的属性**
-
-*<1>主轴的方向*
+**(1)主轴的方向**
 
 ```css
 flex-direction: row | row-reverse | column | column-reverse;
-row（默认值）：主轴为水平方向，起点在左端。
+row(默认值)：主轴为水平方向，起点在左端。
 row-reverse：主轴为水平方向，起点在右端。
 column：主轴为垂直方向，起点在上沿。
 column-reverse：主轴为垂直方向，起点在下沿。
 ```
 
-*<2>换行属性*
+**(2)换行属性**
 
 ```css
 flex-wrap: nowrap | wrap | wrap-reverse;
-nowrap：//（默认）不换行。
+nowrap：//(默认)不换行。
 wrap：//换行，第一行在上方。
 wrap-reverse：//换行，第一行在下方。
 //简写：方向 + 换行
 flex-flow: <flex-direction> || <flex-wrap>;
 ```
 
-*<3>主轴对齐方式*
+**(3)主轴对齐方式**
 
 ```css
 justify-content: flex-start | flex-end | center | space-between | space-around;
-flex-start（默认值）：左对齐
-flex-end：右对齐
-center： 居中
-space-between：两端对齐，项目之间的间隔都相等。
-space-around：每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。
+flex-start(默认值):左对齐
+flex-end:右对齐
+center: 居中
+space-between:两端对齐，项目之间的间隔都相等。
+space-around:每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。
 ```
 
-*<4>交叉轴对齐方式*
+**(4)交叉轴对齐方式**
 
 ```css
 align-items: flex-start | flex-end | center | baseline | stretch;
-flex-start：交叉轴的起点对齐。
-flex-end：交叉轴的终点对齐。
-center：交叉轴的中点对齐。
+flex-start:交叉轴的起点对齐。
+flex-end:交叉轴的终点对齐。
+center:交叉轴的中点对齐。
 baseline: 项目的第一行文字的基线对齐。
-stretch（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度。
+stretch(默认值):如果项目未设置高度或设为auto，将占满整个容器的高度。
 ```
 
-*<5>多根轴线对齐方式*
+**(5)多根轴线对齐方式**
 
 ```css
 align-content: flex-start | flex-end | center | space-between | space-around | stretch;
@@ -710,24 +710,217 @@ flex-end：与交叉轴的终点对齐。
 center：与交叉轴的中点对齐。
 space-between：与交叉轴两端对齐，轴线之间的间隔平均分布。
 space-around：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。
-stretch（默认值）：轴线占满整个交叉轴。
+stretch(默认值)：轴线占满整个交叉轴。
 ```
 
+**附：**
 
+**项目属性** 
+
+```css
+order 定义项目的排列顺序。数值越小，排列越靠前，默认为0
+flex-grow 定义项目的放大比例，默认为0，即不放大
+flex-shrink 定义项目的缩放比例，默认为0，即不缩放
+flex -basis 定义了在分配多余空间之前，项目占据的主轴空间
+flex  flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto
+align-self  允许单个项目有与其他项目不一样的对齐方式
+```
+
+------
 
 ### 19.怎么实现标签的禁用
 
+- `<input>` 标签的 disabled 属性
+- 利用js的obj.setAttribute("disabled", "disabled");
+- jQuery$(this).attr("disabled", "disabled");
+
 ### 20.Flex布局原理
+
+**(1)是什么？**
+Flex 是 Flexible Box 的缩写，意为"弹性布局"，是W3C 提出的一种新型布局方案，可以简便、完整、响应式地实现各种页面布局。目前，它已经得到了所有浏览器的支持。
+
+顾名思义，弹性布局中的元素是有伸展和收缩自身的能力的。 相比于原来的布局方式，如float、position，根据盒子模型，就可以计算出元素的展示尺寸(长宽非百分比)，除非溢出，否则不依赖于父容器的大小。而弹性布局中元素的大小是高度依赖父容器的大小的。因为，它所具有的“伸缩性”，目标就是为了撑满父元素。当然也可以通过相关css属性控制其是否撑满、撑满什么轴。
+
+**(2)原理**
+采用 Flex 布局的元素，称为 Flex 容器(flex container)，简称"容器"。它的所有子元素自动成为容器成员，称为 Flex 项目(flex item)，简称"项目"
+
+Flex 容器默认存在两根轴：水平的主轴(main axis)和垂直的交叉轴(cross axis)。项目默认沿主轴排列，当然项目的排列方向也可以通过改变属性来控制。
+
+主轴的开始位置(与边框的交叉点)叫做main start，结束位置叫做main end；交叉轴的开始位置叫做cross start，结束位置叫做cross end。单个项目占据的主轴空间叫做main size，占据的交叉轴空间叫做cross size。
+
+![img](images/flex1)
+
+------
 
 ### 21.Px与rem的区别
 
+**(1)PX**
+
+px像素（Pixel)。相对长度单位。像素px是相对于显示器屏幕分辨率而言的。
+
+**PX特点**
+
+- IE无法调整那些使用px作为单位的字体大小；
+- 国外的大部分网站能够调整的原因在于其使用了em或rem作为字体单位；
+- Firefox能够调整px和em，rem，但是96%以上的中国网民使用IE浏览器(或内核)。
+
+**(2)EM**
+
+em是相对长度单位就是**根据基准来缩放字体的大小**。相对于当前对象内文本的字体尺寸。如当前对行内文本的字体尺寸未被人为设置，则相对于浏览器的默认字体尺寸。
+
+**EM特点**
+
+em的值并不是固定的；
+
+em会继承父级元素的字体大小。
+
+> **注意：**任意浏览器的默认字体高都是16px。所有未经调整的浏览器都符合: 1em=16px。那么12px=0.75em,10px=0.625em。为了简化font-size的换算，需要在css中的body选择器中声明Font-size=62.5%，这就使em值变为 16px*62.5%=10px, 这样12px=1.2em, 10px=1em, 也就是说只需要将你的原来的px数值除以10，然后换上em作为单位就行了。
+>
+> 所以我们在写CSS的时候，需要注意两点：
+>
+> 1. body选择器中声明font-size=62.5%；
+> 2. 将你的原来的px数值除以10，然后换上em作为单位；
+> 3. 重新计算那些被放大的字体的em数值。避免字体大小的重复声明。
+>
+> 也就是避免1.2 * 1.2= 1.44的现象。比如说你在#content中声明了字体大小为1.2em，那么在声明p的字体大小时就只能是1em，而不是1.2em, 因为此em非彼em，它因继承#content的字体高而变为了1em=12px。
+
+**(3)REM**
+
+rem是CSS3新增的一个相对单位（root em，根em)。这个单位与em区别在于使用rem为元素设定字体大小时，仍然是相对大小，但相对的只是HTML根元素。
+
+**rem特点**
+
+- rem 相对单位，相对于根元素 `<html>` ;
+- 相对大小和绝对大小的优点于一身;
+- 修改根元素就成比例地调整所有字体大小;
+- 避免字体大小逐层复合的连锁反应.
+
+目前，除了IE8及更早版本外，所有浏览器均已支持rem。对于不支持它的浏览器，应对方法也很简单，就是多写一个绝对单位的声明。这些浏览器会忽略用rem设定的字体大小。下面就是一个例子：
+
+```css
+p {font-size:14px; font-size:.875rem;}
+```
+
+> **注意：** *选择使用什么字体单位主要由你的项目来决定，如果你的用户群都使用最新版的浏览器，那推荐使用rem，如果要考虑兼容性，那就使用px,或者两者同时使用。*
+
+**px 与 rem 的选择？**
+
+对于只需要适配少部分手机设备，且分辨率对页面影响不大的，使用px即可 。
+
+对于需要适配各种移动设备，使用rem，例如只需要适配iPhone和iPad等分辨率差别比较挺大的设备。
+
+**rem 和 em 单位是由浏览器基于你的设计中的字体大小计算得到的像素值。**
+
+| 二者比较 | em                                                           | rem                                                     |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------- |
+| 单位基于 | 基于使用他们的元素的字体大小                                 | 基于 html 元素的字体大小。                              |
+| 继承     | 可能受任何继承的父元素字体大小影响                           | 可以从浏览器字体设置中继承字体大小。                    |
+| 使用情况 | 使用em单位应根据组件的字体大小而不是根元素的字体大小。<br/>不使用em单位，并且需要根据浏览器的字体大小设置缩放的情况下使用rem。 | 使用rem单位，除非你确定你需要 em 单位，包括对字体大小。 |
+
+> **注意：**
+>
+> - 媒体查询中使用 rem 单位。
+> - 不要在多列布局中使用 em 或 rem ,改用%。
+> - 不要使用 em 或 rem，如果缩放会不可避免地导致要打破布局元素。
+
 ### 22.网页的三层结构有哪些
+
+- 构成：结构层、表示层、行为层
+- 分别是：HTML、CSS、JavajScript
+- 作用：HTML实现页面结构、CSS完成页面的表现与风格、JavaScript实现客户端的一些功能和业务
 
 ### 23.请简述媒体查询
 
+**(1)什么是媒体查询以及响应式网站设计**
+
+媒体查询就是通过查询当前属于哪种设备, 让网页能够在不同的设备下正常的预览。
+
+**(2)如何在CSS文件中引入媒体查询**
+
+媒体查询写在CSS样式代码的最后，CSS是层叠样式表，在同一特殊性下，靠后的的样式会 重叠前面的样式
+
+```css
+@media 设备类型 and （设备特征）{
+     div{width：200px；height：200px}
+}
+```
+
+**(3)怎样使用media**
+
+```css
+Media所有参数汇总 
+width:浏览器可视宽度。 
+height:浏览器可视高度。 
+device-width:设备屏幕的宽度。 
+device-height:设备屏幕的高度。 
+orientation:检测设备目前处于横向还是纵向状态。(landscape/portrait) 
+aspect-ratio:检测浏览器可视宽度和高度的比例。(例如：aspect-ratio:16/9) 
+device-aspect-ratio:检测设备的宽度和高度的比例。 
+color:检测颜色的位数。（例如：min-color:32就会检测设备是否拥有32位颜色，向所有能显示颜色的设备应 用样式表） 
+color-index:检查设备颜色索引表中的颜色，他的值不能是负数。 
+monochrome:检测单色楨缓冲区域中的每个像素的位数。（这个太高级，估计咱很少会用的到） 
+resolution:检测屏幕或打印机的分辨率。(例如：min-resolution:300dpi或min-resolution:118dpcm)。 
+grid:检测输出的设备是网格的还是位图设备，如果设备是基于网格的（例如电传打字机终端或只能显示一 种字形的电话），该值为1，否则为0
+```
+
+**步骤:**
+
+**1)首先需要在html文档中添加以下代码，用来兼容移动设备的显示效果**
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, 
+maximum-scale=1.0, user-scalable=no"> 是否允许屏幕缩放
+
+    width=device-width:宽度等于当前设备的宽度 
+    initial-scale=1：初始的缩放比例（默认为1） 
+    maximum-scale=1：允许用户缩放到得最大比例（默认为1） 
+    user-scalable=no：用户不能手动缩放
+```
+
+**2)怎样在CSS文件中写CSS响应式媒体查询**
+
+```css
+@media screen and (max-width:720px) and (min-width:320px){ 
+    body{ 
+        background-color:red; 
+    } 
+}
+@media screen and (max-width:320px){ 
+    body{ 
+        background-color:blue; 
+    } 
+}
+```
+
+------
+
 ### 24.Rem缺点
 
-### 25.常见的兼容性一阶段内容中记几个
+1. 在奇葩的 dpr 设备上表现效果不太好，比如一些华为的高端机型用 rem 布局会出现错乱。
+2. 使用 iframe 引用也会出现问题。
+3. rem 在多屏幕尺寸适配上与当前两大平台的设计哲学不一致。即大屏的出现到底是为了看得又大又清楚，还是为了看的更多的问题。
+
+------
+
+### 25.常见的兼容性
+
+> 不同浏览器的内核不尽相同，所以各个浏览器对网页的解析存在一定的差异。
+> 浏览器内核主要分为两种，一是渲染引擎，另一个是js 引擎
+> 所以浏览器兼容性问题一般指：css兼容、js兼容
+
+一. css兼容
+不同浏览器的标签默认的margin和padding不同
+
+问题症状： 随便写几个标签，不加样式控制的情况下，各自的margin 和padding差异较大。
+
+碰到频率: 100%
+
+解决方案：
+CSS里 *{margin:0;padding:0;} 但是性能不好
+一般我们会引入reset.css样式重置
+
+备注： 这个是最常见的也是最易解决的一个浏览器兼容性问题，所有的CSS文件开头都会用样式重置各个标签的内外补丁是0。
+
 
 ### 26.垂直与水平居中的方式
 

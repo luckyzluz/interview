@@ -5,6 +5,7 @@
 > 在ES5的时候，我们认知的数据类型是前6种。
 >
 > ES6 中新增了一种 `Symbol` 。这种类型的对象永不相等，即始创建的时候传入相同的值，可以解决属性名冲突的问题，做为标记。
+>
 
 ------
 
@@ -398,34 +399,135 @@ str=JSON.stringify(array);
 
 > 在 JavaScript 中，每当定义一个对象（函数也是对象）时候，对象中都会包含一些预定义的属性。其中每个函数对象都有一个prototype 属性，这个属性指向函数的原型对象，使用原型对象的好处是所有对象实例共享它所包含的属性和方法
 
-**隐式原型（_proto_）：**上面说的这个原型是JavaScript中的内置属性[[prototype]]，此属性继承自object对象，在脚本中没有标准的方式访问[[prototype]]，但Firefox、Safari和Chrome在每个对象上都支持一个属性_proto_，隐式原型的作用是用来构成原型链，实现基于原型的继承
-**显示原型（prototype）：**每一个函数在创建之后，便会拥有一个prototype属性，这个属性指向函数的原型对象，显示原型的作用是用来实现基于原型的继承与属性的共享
+**隐式原型(_proto_):**上面说的这个原型是JavaScript中的内置属性[[prototype]]，此属性继承自object对象，在脚本中没有标准的方式访问[[prototype]]，但Firefox、Safari和Chrome在每个对象上都支持一个属性_proto_，隐式原型的作用是用来构成原型链，实现基于原型的继承
+**显示原型(prototype):**每一个函数在创建之后，便会拥有一个prototype属性，这个属性指向函数的原型对象，显示原型的作用是用来实现基于原型的继承与属性的共享
 
-**原型链：**原型链是原型对象创建过程的历史记录，当访问一个对象的某个属性时，会先在这个对象本身属性上查找，如果没有找到，则会去它的__proto__隐式原型上查找，即它的构造函数的prototype，如果还没有找到就会再在构造函数的prototype的__proto__中查找，这样一层一层向上查找就会形成一个链式结构
+**原型链:**原型链是原型对象创建过程的历史记录，当访问一个对象的某个属性时，会先在这个对象本身属性上查找，如果没有找到，则会去它的__proto__隐式原型上查找，即它的构造函数的prototype，如果还没有找到就会再在构造函数的prototype的__proto__中查找，这样一层一层向上查找就会形成一个链式结构
 
 1）原型链解决的主要是继承问题
 2）每个对象拥有一个原型对象，通过 proto 指针指向其原型对象，并从中继承方法和属性，同时原型对象也可能拥有原型，这样一层一层，最终指向 null(Object.proptotype.__proto__指向的是null)。这种关系被称为原型链(prototype chain)，通过原型链一个对象可以拥有定义在其他对象中的属性和方法
 3）构造函数 Parent、Parent.prototype 和 实例 p 的关系如下:(p.__proto__ === Parent.prototype)
 
+### 15.Promise的理解  
 
-
-### 15.Promise的理解                    
+Promise 是异步编程的一种解决方案：从语法上讲，promise是一个对象，从它可以获取异步操作的消息；从本意上讲，它是承诺，承诺它过一段时间会给你一个结果。promise有三种状态： pending(等待态)，resolved(成功态)，rejected(失败态)；状态一旦改变，就不会再变。创造promise实例后，它会立即执行。
+ 即使在我短短的编程生涯中，需要使用到的promise也是十分多的，在需要用到异步处理并且需要回调值时，但是promise本身并不是异步的。
 
 ### 16.Promise在哪里使用过
 
+加载图片，ajax请求，vue接口请求
+
 ### 17.请简述async的用法
 
-### 18.***jQuery相关的知识***
+**(1)async函数的基本形式**
 
- 
+```javascript
+//函数声明
+async function foo() {}
+//函数表达式
+const foo = async function () {};
+//对象的方法
+let obj = { async foo() {} };
+obj.foo().then(...)
+//Class 的方法
+class Storage {
+constructor() {
+    this.cachePromise = caches.open('avatars');
+}
+async getAvatar(name) {
+    const cache = await this.cachePromise;
+    return cache.match(`/avatars/${name}.jpg`);
+}
+}
+const storage = new Storage();
+storage.getAvatar('jake').then(…);
+//箭头函数
+const foo = async () => {};
+```
+
+**(2) async函数的返回值总是一个Promise**
+
+无论async函数有无await操作，其总是返回一个Promise。
+
+1. 没有显式return，相当于return Promise.resolve(undefined);
+2. return非Promise的数据data，相当于return Promise.resolve(data);
+3. return Promise, 会得到Promise对象本身
+
+async总是返回Promise，因此，其后面可以直接调用then方法，
+函数内部return返回的值，会成为then回调函数的参数
+函数内部抛出的错误，会被then的第二个函数或catch方法捕获到
+
+```javascript
+//正常返回值
+async function f(){
+    retrun 'hello world';
+}
+f().then(v => console.log(v));//hello world
+//抛出错误
+async function f(){
+    throw new Error('出错了');
+}
+f().then(
+    v => console.log(v),
+    e => console.log(e) //Error: 出错了
+)
+```
+
+### 18.jQuery相关的知识
+
+ 见jquery
 
  
 
 ### 19.Css预处理sass less是什么？为什么使用他们
 
+Sass 和 LESS 都是是 CSS 预处理器，是 CSS 上的一种抽象层，是一种特殊的 语法/语言 最终会编译成 CSS
+
+less 是一种动态样式语言，将 CSS 赋予了动态语言的特性，如变量，继承，运算， 函数.。less 既可以在客户端上运行 (支持 IE 6+, Webkit, Firefox)，也可一在服务端运行(需要借助 Node.js)。
+
+1. **为什么要使用它们？**
+   结构清晰，便于扩展。
+2. 可以方便地屏蔽浏览器私有语法差异。这个不用多说，封装对浏览器语法差异的重复处理，
+   减少无意义的机械劳动。
+
+3. 可以轻松实现多重继承。
+
+4. 完全兼容 CSS 代码，可以方便地应用到老项目中。LESS 只是在 CSS 语法上做了扩展，所
+   以老的 CSS 代码也可以与 LESS 代码一同编译。
+
 ### 20.Js中.call()与.apply()区别
 
+`apply`接受两个参数，第一个参数指定了函数体内`this`对象的指向，第二个参数为一个带下标的集合，这个集合可以为数组，也可以为类数组，
+
+`apply`方法把这个集合中的元素作为参数传递给被调用的函数。
+
+```javascript
+let func = function(a,b,c){
+    console.log([a,b,c])
+}
+func.apply(null,[1,2,3])  // [1,2,3]
+```
+
+`call`传入的参数数量不固定，跟`apply`相同的是，第一个参数也是代表函数体内的`this`指向，从第二个参数开始往后，每个参数被依次传入函数
+
+```javascript
+let func = function(a,b,c){
+    console.log([a,b,c])
+}
+func.call(null,3,4,5) // [3,4,5]
+```
+
 ### 21.为什么会造成跨域/请简述同源策略
+
+**为什么会造成跨域**
+
+因为浏览器的同源政策，就会产生跨域。比如说发送的异步请求是不同的两个源，就比如是不同的的两个端口或者不同的两个协议或者不同的域名。由于浏览器为了安全考虑，就会产生一个同源政策，不是同一个地方出来的是不允许进行交互的。
+
+**简述同源策略**
+
+同源策略是客户端脚本（尤其是Javascript）的重要的安全度量标准。它最早出自Netscape Navigator2.0，其目的是防止某个文档或脚本从多个不同源装载。
+这里的同源策略指的是：协议，域名，端口相同，同源策略是一种安全协议。
+指一段脚本只能读取来自同一来源的窗口和文档的属性。
 
 ### 22.This指向
 
@@ -435,62 +537,207 @@ str=JSON.stringify(array);
 
 ### 23.请输出三种减少页面加载时间的方式
 
-什么是jsonp工作原理是什么？他为什么不是真正的ajax
+1. 优化图片 
+2. 图像格式的选择（GIF：提供的颜色较少，可用在一些对颜色要求不高的地方）
+3. 优化CSS（压缩合并css，如margin-top,margin-left...)
+4. 网址后加斜杠，对服务器而言，不加斜杠服务器会多一次判断的过程，加斜杠就会直接返回网站设置的存放在网站根目录下的默认页面。
+5. 标明高度和宽度（如果浏览器没有找到这两个参数，它需要一边下载图片一边计算大小，如果图片很多，浏览器需要不断地调整页面。这不但影响速度，也影响浏览体验。 当浏览器知道了高度和宽度参数后，即使图片暂时无法显示，页面上也会腾出图片的空位，然后继续加载后面的内容。从而加载时间快了，浏览体验也更好了。）
+6. 减少http请求（合并文件，合并图片）。
 
-请掌握2种以上数组去重的方式
+### 24.什么是jsonp，工作原理是什么？他为什么不是真正的ajax
 
-深浅拷贝是什么如何实现？
+**Jsonp其实就是一个跨域解决方案。**
 
-为什么js是弱类型语言
+**jsonp的原理**:就是利用浏览器可以动态地插入一段js并执行的特点完成的。
 
-怎么转换less为css
+**为什么不是真正的 ajax?**   
 
-echarts使用最多的是什么
+**ajax的核心**：通过`XmlHttpRequest`获取非本页内容，
 
-For循环与map循环有什么区别
+**jsonp的核心**：动态添加`<script>`标签来调用服务器提供的js脚本。
 
-请写出一个简单的类与继承
+**相同点：**
 
-同步与异步的区别/阻塞与非阻塞区别
+ajax和jsonp的调用方式很像，目的一样，都是请求url，然后把服务器返回的数据进行处理，因此jquery和ext等框架都把jsonp作为ajax的一种形式进行了封装；
 
-重绘和回流是什么
+**不同点：**
 
-http是什么？有什么特点
+1. 实质不同
+   　ajax的核心是通过xmlHttpRequest获取非本页内容
+   　jsonp的核心是动态添加script标签调用服务器提供的js脚本
+2. ajax通过服务端代理一样跨域
+   　jsonp也不并不排斥同域的数据的获取
+3. jsonp是一种方式或者说非强制性的协议
+   　ajax也不一定非要用json格式来传递数据　
+4. jsonp只支持get请求，ajax支持get和post请求
 
-HTTP协议和HTTPS区别
+### 25.请掌握2种以上数组去重的方式
 
-原型和继承，prototype，call和apply继承的区别（第一个参数是相同的，第二个的区别在哪）
+```javascript
+let originalArray = [1,2,3,4,5,3,2,4,1];
+```
 
-数组的方法，字符串的方法，要知道每个的含义，掌握排序和去重的方法
+**方式1：(ES6的Set集合)**
 
-箭头函数与普通函数的区别
+```javascript
+const result = Array.from(new Set(originalArray));
+console.log(result); // -> [1, 2, 3, 4, 5]
+```
 
-什么是js内存泄露？
+**方式2:(map集合)**
+
+```javascript
+const result = [];
+const map = new Map();
+for (let v of originalArray) {
+    if (!map.has(v)) {
+        map.set(v, true);
+        result.push(v);
+    }
+}
+console.log(result); // -> [1, 2, 3, 4, 5]
+```
+
+**方式3:(Includes)**
+
+```javascript
+const result = [];
+for (let v of originalArray) {
+    if (!result.includes(v)) {
+        result.push(v);
+    }
+}
+console.log(result); // -> [1, 2, 3, 4, 5]
+```
+
+**方式4:(前后对比)**
+
+```javascript
+for (let i = 0; i < originalArray.length; i++) {
+    for (let j = i + 1; j < originalArray.length; j++) {
+        if (originalArray[i] === originalArray[j]) {
+            originalArray.splice(j, 1);
+            j--;
+        }
+    }
+}
+console.log(originalArray); // -> [1, 2, 3, 4, 5]
+```
+
+**方式5:(Filter过滤器)**
+
+```javascript
+const obj = {};
+const result = originalArray.filter(item => obj.hasOwnProperty(typeof item + item) ? false:(obj[typeof item + item] = true));
+console.log(result); // -> [1, 2, 3, 4, 5]
+```
+
+### 26.深浅拷贝是什么,如何实现？
+
+**浅拷贝**子对象复制父对象，父子对象发生关联，两者属性值指向同一内存空间。简单来讲，就是改变其中一个对象，另一个对象也会跟着改变。
+
+```javascript
+let a = [0,1,2],b = a;
+a[0] = 3;
+console.log(a,b) // [3,1,2] [3,1,2]
+```
+
+**深拷贝**拷贝对象各个层级的属性。简单的讲，就是复制出来的每个对象都有属于自己的内存空间，不会互相干扰。
+
+**借用JSON对象的 parse 和 stringify**
+
+```javascript
+function deepClone(obj){
+    let newObj = JSON.stringify(obj);
+    let objClone = JSON.parse(newObj);
+    return objClone;
+}
+let a=[0,1,[2,3],4],
+    b=deepClone(a);
+a[0]=1;
+a[2][0]=1;
+console.log(a,b);
+```
+
+### 27.为什么js是弱类型语言
+
+**弱类型语言**是相对强类型语言来说的。
+
+在强类型语言中，变量类型有多种，例如`int` `char` `float` `boolean` 等不同的类型相互转换有时需要强制转换而javascript只有一种类型`var`，为变量赋值时会自动判断类型并进行转换所以javascript是弱语言就体现在变量定义类型var上了 
+
+### 28.怎么转换less为css
+
+**Less** 是一门 CSS 预处理语言，它扩充了 CSS 语言，增加了诸如变量、混合（mixin）、函数等功能，让 CSS 更易维护、方便制作主题、扩充。
+
+1. 首先，你要确认你的电脑已经安装了node。
+2. 使用 npm 安装 lessc，命令行：
+   `npm install -g less`
+3. 然后，进入需要转换的less文件的目标位置。
+4. 最后，你只需输入以下两条命令：
+
+```cmd
+npm install -g less
+lessc less文件名.less 生成的css文件名.css
+```
+
+### 29.echarts使用最多的是什么
+
+> ​		商业级数据图表，它是一个纯JavaScript的图标库，兼容绝大部分的浏览器，底层依赖轻量级的canvas类库ZRender，提供直观，生动，可交互，可高度个性化定制的数据可视化图表。创新的拖拽重计算、数据视图、值域漫游等特性大大增强了用户体验，赋予了用户对数据进行挖掘、整合的能力。
+
+**折线图（区域图）、柱状图（条状图）、散点图（气泡图）、K线图、饼图（环形图）**
+
+**雷达图（填充雷达图）**
+
+### 30.For循环与map循环有什么区别
+
+**map方法**
+1.map方法**返回一个新的数组**，数组中的元素为原始数组调用函数处理后的值。
+2.map方法不会对空数组进行检测，map方法不会改变原始数组。
+
+
+
+### 31.请写出一个简单的类与继承
+
+### 32.同步与异步的区别/阻塞与非阻塞区别
+
+### 33.重绘和回流是什么
+
+### 34.http是什么？有什么特点
+
+### 35.HTTP协议和HTTPS区别
+
+### 36.原型和继承，prototype，call和apply继承的区别（第一个参数是相同的，第二个的区别在哪）
+
+### 37.数组的方法，字符串的方法，要知道每个的含义，掌握排序和去重的方法
+
+### 38.箭头函数与普通函数的区别
+
+### 39.什么是js内存泄露？
 
  
 
-你如何对网站的文件和资源进行优化？
+### 40.你如何对网站的文件和资源进行优化？
 
-请简述ajax的执行过程 以及常见的HTTP状态码
+### 41.请简述ajax的执行过程 以及常见的HTTP状态码
 
-预加载和懒加载的区别，预加载在什么时间加载合适
+### 42.预加载和懒加载的区别，预加载在什么时间加载合适
 
  
 
-Jquery选择器有哪些
+### 43.Jquery选择器有哪些
 
-Jquery插入节点的方法
+### 44.Jquery插入节点的方法
 
-Js的函数节流和函数防抖的区别
+### 45.Js的函数节流和函数防抖的区别
 
-Get和post不同
+### 46.Get和post不同
 
-什么是csrf攻击
+### 47.什么是csrf攻击
 
-Js数据类型的分类
+### 48.Js数据类型的分类
 
-Js中手写一个深拷贝
+### 49.Js中手写一个深拷贝
 
-什么时候用深拷贝 /浅拷贝
+### 50.什么时候用深拷贝 /浅拷贝
 
-如何遍历一个多维数组
+### 51.如何遍历一个多维数组

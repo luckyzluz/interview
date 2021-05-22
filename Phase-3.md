@@ -248,22 +248,31 @@ func2(){
 
 ### 7.Vue循环的key作用
 
+**答:**
+
+当 Vue.js 用 v-for 正在更新已渲染过的元素列表时，它默认用“就地复用”策略。
+
+如果数据项的顺序被改变，Vue 将不会移动 DOM 元素来匹配数据项的顺序， 而是简单复用此处每个元素，并且确保它在特定索引下显示已被渲染过的每个元素。
+
+**key的作用**主要是为了高效的更新虚拟DOM。
+
 > ​		`key` 的特殊属性主要用在 Vue 的虚拟 DOM 算法，在新旧 nodes 对比时辨识 VNodes。如果不使用 key，Vue 会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用 key，它会基于 key 的变化重新排列元素顺序，并且会移除 key 不存在的元素。
 >
 > ​		什么意思呢？就是说，key值的存在保证了唯一性，可以用于dom的重新渲染或是就地复用。
 >
 > ​		vue在执行时，会对节点进行检查，如果没有key值，那么，vue检查到这里有dom节点，则会对内容进行清空，并且赋予新值；如果有key值的存在，那么vue会对`oldnode`和`newnode`进行对比，发现两者key值是否相同，进行调换位置或是删除操作。
 
-**更精准-->在虚拟dom节点中赋予key值，会更加快速的拿到需要的目标节点，不会造成就地复用的情况，对于节点的把控更加精准。**
-
 ### 8.什么是计算属性
 
 **可以理解为能够在里面写一些计算逻辑的属性。**
 **作用:**
 
-1. 减少模板中的计算逻辑
-2. 数据缓存。当我们的数据没有变化时，不在执行计算的过程
-3. 依赖固定的数据类型（响应式数据），不能是普通的传入的一个全局数据
+1. 使得数据处理结构清晰；
+2. 依赖于数据，数据更新，处理结果自动更新；
+3. 计算属性内部this指向vm实例；
+4. 在template调用时，直接写计算属性名即可；
+5. 常用的是getter方法，获取数据，也可以使用set方法改变数据；
+6. 相较于methods，不管依赖的数据变不变，methods都会重新计算，但是依赖数据不变的时候computed从缓存中获取，不会重新计算。
 
 > **PS:计算属性和方法**
 > 值不是直接渲染到页面，也是通过计算之后再渲染到页面，可以使用计算属性computed
@@ -294,107 +303,442 @@ func2(){
 - 初次加载时耗时多。
 - 页面复杂度提高很多。
 
-### Vuex是什么？怎么使用？在那种场景下使用
+### 10.Vuex是什么？怎么使用？在那种场景下使用
 
-### Vue中路由跳转方式（声明式/编程式）
+**vuex**是通过创建一个集中的数据存储，方便程序中的所有组件进行访问。
 
-### 跨域的解决方式
+**总结**：Vuex就是状态管理工具，数据管理工具
 
-### Vue的生命周期请简述
+<img src="images/vuex1.jpg" alt="img" style="zoom:67%;" />
 
-### Vue生命周期的作用
+**使用:**
 
-### DOM渲染在那个生命周期阶段内完成
+**安装vuex**
+npm install vuex --save
+配置vuex文件创建在src中创建store文件夹与store.js
 
-### Vue路由的实现
+==在main.js引入store，注入==
 
-### Vue路由模式***\*hash和history，简单讲一下\****
+**1、创建vuex实例**：（如下图vscod已经帮我们创建好了，下面只是稍微改动了一下）：
+将vux赋值给一个变量并暴露出去
 
-### Vue路由传参的两种方式，prams和query方式与区别
+**vuex中的数据源state**，我们需要保存的数据就保存在这里。
+
+<img src="images/vuex.jpg" alt="img" style="zoom: 67%;" />
+
+**2、vuex–使用数据源**：
+要使用首先在全局main.js引入vuex。
+<img src="images/vuex2.jpg" alt="在这里插入图片描述" style="zoom: 67%;" />
+
+**2.1**
+**vuex中的数据源state**，我们需要保存的数据就保存在这里。
+将数据放在state中
+<img src="images/vuex3.jpg" alt="在这里插入图片描述" style="zoom:67%;" />
+在需要使用这些数据的文件中可以使用$store.state.xx调用数据
+<img src="images/vuex4.jpg" alt="在这里插入图片描述" style="zoom:67%;" />
+页面效果：
+<img src="images/vuex5.jpg" alt="在这里插入图片描述" style="zoom:67%;" />
+
+### 11.Vue中路由跳转方式（声明式/编程式）
+
+**(1)使用 标签实现路由打开 (声明式导航)：**
+
+router-link标签会自动渲染成a标签，该组件的属性有：
+
+`to 、 tag、target、 active-class、exact-active-class、exact 、event 、 replace、 append`
+
+1. to（必选参数）指定要跳转的路由路径：类型string/location
+
+   ```vue
+   <!--直接写对用的路由名-->
+   <router-link to="/about">About</router-link>
+   
+   <!--可以写对象  根据path路径指定跳转-->
+   <router-link :to="{path:'one'}">路由一</router-link>
+   <!--可以写对象  根据路由命名指定跳转-->
+   <router-link :to="{name:'Two'}">路由二</router-link>
+   ```
+
+   ```vue
+   <!--路由携带查询参数 params方法-->
+   <router-link :to="{name:'Three',params: {number: '3' }}">路由三</router-link>
+   <!--使用path 带路由参数params，params 不生效-->
+   <router-link :to="{path:'/three',params: {number: '3' }}">路由三</router-link>
+   ```
+
+   在被跳转到路由页面中获取传递参数
+
+   ```vue
+   created(){
+   	//获取params传递的参数
+   	console.log(this.$route.params.number)
+   }
+   ```
+
+   ```vue
+   <!--路由携带查询参数 query方法-->
+   <!--query传参会 地址栏变成 /Four?number=4-->
+   <router-link :to="{path:'Four',query: {number: '4' }}">路由四</router-link>
+   <router-link :to="{name:'Four',query: {number: '4' }}">路由四</router-link>
+   ```
+
+   改变地址拼接传递参数
+
+   ![img](images/router1.jpg)
+
+   在被跳转到路由页面中获取传递参数
+
+   ```vue
+   created(){
+   	//获取query传递的参数
+   	console.log(this.$route.query.number)
+   }
+   ```
+
+2. tag：类型: string 可以指定当前标签渲染为其他某种标签,默认值: “a” ,
+
+   ```vue
+   <!--tag属性 会指定渲染标签-->
+    <router-link to="/about">About</router-link>
+   <router-link to="/about" tag='div'>About</router-link>
+   <router-link to="/about" tag='title'>About</router-link>
+   <router-link to="/about" tag='abbr'>About</router-link>
+   ```
+
+   这是前端渲染 默认为a标签
+
+   ![img](images/router2.jpg)
+
+3. target 属性规定在何处打开链接文档 默认值_self:在相同的框架中打开被链接文档 _parent:在父框架集中打开被链接文档。 _top:在整个窗口中打开被链接文档。 _blank:在新窗口中打开被链接文档 (只有tag=“a"模式下 target=”_blank" 属性才会生效。)
+
+4. active-class 类型: string 默认值: “router-link-active” 设置 链接激活时使用的 CSS 类名。默认值可以通过路由的构造选项 linkActiveClass 来全局配置。
+
+5. exact-active-class 类型: string 默认值: “router-link-exact-active” 配置当链接被精确匹配的时候应该激活的 class。注意默认值也是可以通过路由构造函数选项 linkExactActiveClass 进行全局配置的
+
+6. exact 类型: boolean 默认值: false按照这个规则，每个路由都会激活< router-link to="/" >！想要链接使用 “exact 匹配模式”，则使用 exact 属性
+
+7. event 类型: string | Array< string > 默认值: ‘click’ 声明可以用来触发导航的事件。可以是一个字符串。
+
+8. replace 类型: boolean 默认值: false 设置 replace 属性的话，当点击时，会调用 router.replace() 而不是 router.push()，于是导航后不会留下 history 记录。
+
+9. append 类型: boolean 默认值: false 设置 append 属性后，则在当前 (相对) 路径前添加基路径
+
+**(2)可以借助 router 的实例方法，通过编写代码来实现 (编程式导航)：**
+
+在Vue实例内部，你可以通过`router`访问路由实例 。因 此你可以 调 用this.router访问路由实例。因此你可以调用this.router访问路由实例。因此你可以调用`this.router.push`。
+
+想要导航到不同的URL，则使用`router.push`方法。这个方法会向history栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的URL。
+
+点击事件
+
+```vue
+<!--编程式导航-->
+<div @click="goRouter">跳转路由</div>
+```
+
+methods下的函数
+
+```js
+methods:{
+	goRouter(){
+		// 字符串
+		this.$router.push('four')
+		
+		// 对象
+		this.$router.push({ path: 'four' })
+
+		// 命名的路由
+		this.$router.push({ name: 'Four', params: { number: '123' }})
+		//如果提供了 path，params 会被忽略，上述例子中的 query 并不属于这种情况。取而代之的是下面例子的做法，你需要提供路由的 name 或手写完整的带有参数的 path：
+		this.$router.push({ path: '/four', query: { number: '123' }})
+		
+		const number = '1234'
+		this.$router.push({ path: `/four/${number}`})
+		
+		//this.$router.replace 使用方法同this.$router.push  但是history栈中不会有记录，点击返回会跳转到上上个页面
+
+		//回退方法 这个方法的参数是一个整数，意思是在 history 记录中向前或者后退多少步，类似 window.history.go(n)。
+		this.$router.go(1)
+	}
+}
+```
+
+有时候需要在编程式导航中在浏览器中打开一个新的页面窗口 使用 $router.resolve 这种方法能够实现新窗口打开，
+
+```js
+let routeData = this.$router.resolve({
+	name: "Four",
+	query:{number:'123456'}
+});
+window.open(routeData.href, '_blank');
+```
+
+### 12.跨域的解决方式
+
+### 13.请简述Vue的生命周期以及作用
+
+vue实例从开始创建、初始化数据，编译模板、挂载DOM 渲染、更新、卸载等一系列过程，称为Vue的生命周期，可以分为创建前后、载入前后、更新前后、销毁前后。
+
+**可以理解vue生命周期就是指vue实例从创建到销毁的过程**
+
+**创建前后：** **BeforeCreate** 、 **Created**
+
+1、`beforeCreate`：这个阶段实例已经初始化，只是数据观察与事件机制尚未形成，不能获取DOM节点`（没有data，没有el）`
+ `使用场景：因为此时data和methods都拿不到，所以通常在实例以外使用`
+ 2、`created`：实例已经创建，仍然不能获取DOM节点`（有data，没有el）`
+ `使用场景：模板渲染成html前调用，此时可以获取data和methods，so 可以初始化某些属性值，然后再渲染成视图，异步操作可以放在这里`
+
+**载入前后：** **BeforeMount 、Mounted**
+
+1、`beforeMount`：是个过渡阶段，此时依然获取不到具体的DOM节点，但是vue挂载的根节点已经创建`（有data，有el）`
+ 2、`mounted`：数据和DOM都已经被渲染出来了
+ `使用场景：模板渲染成html后调用，通常是初始化页面完成后再对数据和DOM做一些操作，需要操作DOM的方法可以放在这里`
+
+**更新前后：** **BeforeUpdate** 、 **Update**
+
+1、`beforeUpdate`：检测到数据更新时，但在DOM更新前执行
+2、`updated`：更新结束后执行
+`使用场景：需要对数据更新做统一处理的；如果需要区分不同的数据更新操作可以使用$nextTick`
+
+**销毁前后：** **BeforeDestory** 、 **Destroyed**
+
+1、`beforeDestroy`：当要销毁vue实例时，在销毁前执行
+2、`destroyed`：销毁vue实例时执行
+
+**第一次页面加载会触发哪些钩子**
+
+`beforeCreate`、`created`、`beforeMount`、`mounted`
+
+<img src="images/990427-20200806100459811-935629357.png" alt="图片" style="zoom:67%;" />
+
+**作用:它的生命周期中有多个事件钩子，让我们在控制整个Vue实例的过程时更容易形成好的逻辑。**
+
+### 14.DOM渲染在那个生命周期阶段内完成
+
+DOM 渲染在 mounted 中就已经完成了。
+
+### 15.Vue路由的实现
+
+**vue-router是专为Vue打造的路由管理工具**
+
+**1，hash模式**
+
+默认模式，在浏览器中符号“#”，#以及#后面的字符称之为hash，用window.location.hash读取；
+
+特点：hash虽然在URL中，但不被包括在HTTP请求中；用来指导浏览器动作，对服务端安全无用，hash不会重加载页面。
+
+hash 模式下，仅 hash 符号之前的内容会被包含在请求中，如 http://www.xxx.com，因此对于后端来说，即使没有做到对路由的全覆盖，也不会返回 404 错误。
+
+**2，history模式**
+
+history采用HTML5的新特性；且提供了两个新方法：pushState()，replaceState()可以对浏览器历史记录栈进行修改，以及popState事件的监听到状态变更。
+
+history 模式下，前端的 URL 必须和实际向后端发起请求的 URL 一致，如 http://www.xxx.com/items/id。后端如果缺少对 /items/id 的路由处理，将返回 404 错误。
+
+**3，abstract模式**
+
+支持javascript的所有运行环境，常指Node.js服务器环境
+
+### 16.Vue路由模式***hash和history，简单讲一下***
+
+
+
+### 17.Vue路由传参的两种方式，prams和query方式与区别
 
  
 
-### Vue数据绑定的几种方式
+### 18.Vue数据绑定的几种方式
 
  
 
-### Vue注册一个全局组件
+### 19.Vue注册一个全局组件
 
  
 
-Vue的路由钩子函数/路由守卫有哪些
+### 20.Vue的路由钩子函数/路由守卫有哪些
 
-Vue中如何进行动态路由设置？有哪些方式？怎么获取传递过来的数据？
+### 21.Vue中如何进行动态路由设置？有哪些方式？怎么获取传递过来的数据？
 
-Elementui中的常用组件有哪些？请简述你经常使用的 并且他们的属性有哪些？
+### 22.Elementui中的常用组件有哪些？请简述你经常使用的 并且他们的属性有哪些？
 
-Vue-cli中如何自定义指令
+### 23.Vue-cli中如何自定义指令
 
-Vue中指令有哪些
+1. 创建局部指令
 
-Vue如何定义一个过滤器
+   ```js
+   var app = new Vue({
+   el: '#app', data: {}, // 创建指令(可以多个)
+   directives: {// 指令名称        
+   	dir1: {
+   		inserted(el) {
+   		// 指令中第一个参数是当前使用指令的DOM
+   		console.log(el);
+   		console.log(arguments);//对DOM进行操作                
+   	el.style.width = '200px';
+       el.style.height = '200px';
+   	el.style.background = '#000';
+   				}
+   			}
+   		}
+   	})
+   ```
 
-对vue 中keep-alive的理解
+2. 全局指令
 
-如何让组件中的css在当前组件生效
+   ```js
+   Vue.directive(
+   'dir2', {    
+   inserted(el) {        
+   console.log(el);    
+   }})
+   ```
 
-Vue生命周期一共几个阶段
+3. 指令的使用
 
-Mvvm与mvc的区别
+```xml
+<div id="app">    
+    <div v-dir1></div>    
+    <div v-dir2></div>
+</div>
+```
 
-Vue组件中的data为什么是函数
+### 24.Vue中指令有哪些
 
-Vue双向绑定的原理
+### 25.Vue如何定义一个过滤器
 
-Vue中组件怎么传值
+**html代码:**
 
-Bootstrap的原理
+```html
+<div id="app">     
+    <input type="text" v-model="msg" />     	{{msg| capitalize }}
+</div>
+```
 
-Vue兄弟组件传值
+**JS代码:**
 
-如果一个组件在多个项目中使用怎么办
+```js
+var vm = new Vue({
+		el: "#app",
+		data: {
+			msg: ''
+		},
+		filters: {
+			capitalize: function (value) {
+				if (!value) return ''
+				value = value.toString()
+				return value.charAt(0).toUpperCase() + value.slice(1)
+			}
+		}
+	})
+```
 
-槽口请简述
+全局定义过滤器:
 
-Watch请简述
+```js
+Vue.filter('capitalize', function (value) {
+		if (!value) return ''
+		value = value.toString()
+		return value.charAt(0).toUpperCase() + value.slice(1)
+	})
+```
 
-Vantui请简述下
+过滤器接收表达式的值 (msg) 作为第一个参数。capitalize 过滤器将会收到 msg的值作为第一个参数。
 
-计算属性与watch区别
+### 26.对vue 中keep-alive的理解
 
-mvvm框架是什么？它和其它框架（jquery）的区别是什么？哪些场景适合？
+keep-alive是 Vue 内置的一个组件，可以使被包含的组件保留状态，或避免重新渲染。
+在vue 2.1.0 版本之后，keep-alive新加入了两个属性: include(包含的组件缓存) 与 exclude(排除的组件不缓存，优先级大于include) 。
 
-Vue首屏加载慢的原因，怎么解决的，白屏时间怎么检测，怎么解决白屏问题
+```vue
+<keep-alive include='include_components' exclude='exclude_components'>
+    <component>    
+        <!-- 该组件是否缓存取决于include和exclude属性 -->  
+    </component>
+</keep-alive>
+```
 
-Vue双数据绑定过程中，这边儿数据改变了怎么通知另一边改变
+**参数解释**
+include - 字符串或正则表达式，只有名称匹配的组件会被缓存
+exclude - 字符串或正则表达式，任何名称匹配的组件都不会被缓存
+include 和 exclude 的属性允许组件有条件地缓存。二者都可以用“，”分隔字符串、正则表达式、数组。当使用正则或者是数组时，要记得使用v-bind 。
 
-Vuex流程
+**使用示例**
 
-Vuex怎么请求异步数据
+```vue
+<!-- 逗号分隔字符串，只有组件a与b被缓存。-->
+<keep-alive include="a,b">
+    <component></component>
+</keep-alive>
+<!-- 正则表达式 (需要使用 v-bind，符合匹配规则的都会被缓存) -->
+<keep-alive :include="/a|b/">
+    <component></component>
+</keep-alive>
+<!-- Array (需要使用 v-bind，被包含的都会被缓存) -->
+<keep-alive :include="['a', 'b']">  <component></component>
+</keep-alive>
+```
 
-Vuex中action如何提交给mutation的
+### 27.如何让组件中的css在当前组件生效
 
-Route与router区别
+在style标签中写入scoped即可 例如：`<style scoped></style>`
 
-vuex有哪几种状态和属性
+### 28.Vue生命周期一共几个阶段
 
-vuex的State特性是？
+### 29.Mvvm与mvc的区别
 
-vuex的Getter特性是？
+### 30.Vue组件中的data为什么是函数
 
-vuex的Mutation特性是？
+### 31.Vue双向绑定的原理
 
-vuex的actions特性是？
+### 32.Vue中组件怎么传值
 
-### vuex 是什么？怎么使用？哪种功能场景使用它
+### 33.Bootstrap的原理
 
-vuex的优势
+### 34.Vue兄弟组件传值
 
-### Vue路由懒加载（按需加载路由）
+### 35.如果一个组件在多个项目中使用怎么办
+
+### 36.槽口请简述
+
+### 37.Watch请简述
+
+### 38.Vantui请简述下
+
+### 39.计算属性与watch区别
+
+### 40.mvvm框架是什么？它和其它框架（jquery）的区别是什么？哪些场景适合？
+
+### 41.Vue首屏加载慢的原因，怎么解决的，白屏时间怎么检测，怎么解决白屏问题
+
+### 42.Vue双数据绑定过程中，这边儿数据改变了怎么通知另一边改变
+
+### 43.Vuex流程
+
+### 44.Vuex怎么请求异步数据
+
+### 45.Vuex中action如何提交给mutation的
+
+### 46.Route与router区别
+
+### 47.vuex有哪几种状态和属性
+
+### 48.vuex的State特性是？
+
+### 49.vuex的Getter特性是？
+
+### 50.vuex的Mutation特性是？
+
+### 51.vuex的actions特性是？
+
+### 52.vuex 是什么？怎么使用？哪种功能场景使用它
+
+### 53.vuex的优势
+
+### 54.Vue路由懒加载（按需加载路由）
 
  
 
-v-for与v-if优先级
+### 55.v-for与v-if优先级
 
 首先不要把v-if与用在同一个元素上，原因：v-for比v-if优先，如果每一次都需要遍历整个数组，将会影响速度，尤其是当之需要渲染很小一部分的时候。
 

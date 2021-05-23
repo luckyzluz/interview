@@ -684,64 +684,599 @@ include 和 exclude 的属性允许组件有条件地缓存。二者都可以用
 
 ### 28.Vue生命周期一共几个阶段
 
+四个,**初始化 (create)--- 组件挂载(mount)-----组件更新 (update)--- 销毁(destroy)**
+
 ### 29.Mvvm与mvc的区别
+
+MVC和MVVM都是一种设计思想。
+
+**MVC:**View是可以直接访问Model的。从而，View里会包含Model信息，不可避免的还要包括一些业务逻辑。。
+
+**MVVM:**主要解决了MVC中大量的DOM操作使页面渲染性能降低，加载速度变慢，影响用户体验。
+
+**区别就是**：MVVM实现了View和Model的自动同步，也就是当Model的属性改变时，我们不用再自己手动操作Dom元素，来改变View的显示，而是改变属性后该属性对应View层显示会自动改变。
 
 ### 30.Vue组件中的data为什么是函数
 
+**Vue.js中data的作用**
+
+**（1）Vue.js中data为什么是一个函数**
+
+Vue组件具有高度复用性，组件是可复用的Vue实例，一个组件被创建后，可能被应用到各个地方，而不管这个组件被复用了多少次，组件中的data都应该是相互隔离，互不影响的，基于这一理念，组件每被复用一次，组件中的data就应该被复制一次，这样就可以保证，*当某一处被复用的组件中的data的值发生变化后，也不会影响到其它被复用组件中的data的值。*
+
+**（2）Vue.js中data为什么要return回去**
+
+不使用return包裹的数据会在项目的全局可见，会造成变量污染
+*使用return包裹后的数据中的变量只是在当前组件内生效，不会影响其它组件*
+其实相当于使用闭包的一个思想，将当前页面内的数据放在了一个闭包里面，形成一个封闭的空间。
+
 ### 31.Vue双向绑定的原理
+
+通过数据劫持以及发布者-订阅者模式的方式来实现的，
+
+关于VUE双向数据绑定，其核心是 `Object.defineProperty(obj,prop,descriptor)`方法；
+
+> obj:目标对象
+>
+> prop:需要定义的属性或方法的名称
+>
+> descriptor:目标属性所拥有的特性
 
 ### 32.Vue中组件怎么传值
 
+**(1)父--->子组件**
+
+**1)方式一**
+
+**父组件中**，子组件以自定义标签，或者`router-view`的形式调用，在这些标签里通过`:lists='list'`形式传递给子组件。:后面跟的是自己定义的参数名，后面子组件接收时用到。==' '==里面跟的是父组件里的数据，或者方法。
+
+**子组件中**，用`props:['lists','alert1']`,形式接收父组件的数据和方法，注意接收使用的名字跟父组件自己定义的名字要一致，此时如果接收的方法用到了父组件的变量，在子组件中调用时，还是指向父组件的变量。
+
+**2)方式二**
+
+**父组件中**基本同上，区别在于绑定的时候用v-on:或@而不是用`:`   **亲测只有:不起作用**。
+
+**子组件中**不使用props来接收父组件的方法，在methods中通过定义一个新方法，在方法体里面写`this.$emit('alert1','canshu1')`，以这种形式获取父组件的方法，在赋值给子组件新定义的方法，
+
+注意alert1是父组件中绑定时候自己定义的名字，canshu1若该方法带参数则加上，不带则加空字符串即可。
+
+**(2)子--->父组件**
+
+1. 子组件定义好方法，
+2. 父组件在引用子组件的时候在自定义标签中添加标识符，`ref='child1'`，用来表示这个子组件。
+3. 父组件在methods中定义自己的方法名，方法主体：`this.$refs.child1.fun`。
+
+> 意思是通过调用`$refs`中名字叫child1的子组件里的fun方法，赋值给父组件。
+
+**(3)兄弟组件通信**
+
+**1)方式一**
+
+第一步：借助中央事件总线：在外部新建一个js文件，取名Bus.js，可放在assets文件夹目录下。
+
+第二步：两个组件作为子组件被同一个父组件所引用，在同一个页面显示。
+
+第三步：两个兄弟组件之间的语法
+
+组件1需要定义一个发送数据的方法，此处sendMsg是定义在此的方法，页面点击时候触发此函数，函数主体，通过Bus中央事件总线用$emit发送一个send事件，事件的功能就是传送一个this.a++的数据，区分sendMsg和send，前者是当前页面的点击事件，后者是发送出去，需要其他组件监听的事件。
+组件2在组件2事先定义一个变量，在生命周期为created的时候，通过Bus中央事件总线用$on监听组件1中发送的send事件，用一个带参数的回调函数，接收穿过来的值，参数即为传的值 ，把值赋值给当前组件的变量。
+
+**2)方式二**（方式1的简化版）
+
+第一步：省略了外部的js文件，直接把总线放在main.js里的vue实例中，写法如图。
+
+第二步：在使用的时候，不需要引入外部文件，只需要在Bus前加this.$root，即可调用。
+
+**(4)页面跳转传值**
+
+方式1：query传值在router-link标签内to的后面直接加
+
+怎么获取id值，
+
+在全局已经存在这个变量，只需要按照图中所示，找到这个变量重新赋值即可。
+
+注意：传值的时候会在url地址后面明码拼接所传的值，另外，在组件1中发送数据，到了组件2的url上才会拼接出来，所以，数据也只能在组件2中获取。
+
+刷新不会清空
+
+方式2：params传值：在router-link中加
+
+跟query的传值在写法上很相似，url的显示则完全不同，注意params有一个name属性，对应的是你需要传过去的那个组件的name名在路由中有定义，必须一致。
+
+路由书写
+
+
+
+路由要定义好后面跟随的参数名
+
+
+
+调用数据跟query类似，修改query为params。
+
 ### 33.Bootstrap的原理
+
+通过定义容器大小，平分12份(也有平分成24份或32份，但12份是最常见的)，再调整内外边距，最后结合媒体查询，就制作出了强大的响应式网格系统。
+
+Bootstrap框架中的网格系统就是将容器平分成12份。
 
 ### 34.Vue兄弟组件传值
 
+通过一个事件总线来实现（可以把事件总线理解为一个全局变量），他是做完一个兄弟之间的桥梁，总线的名称是可以随便来起的，但通常有几个固定的名字是人们看到都认识能识别到的
+
+思路：在Vue的原型上创建一个属性bus，该属性的值为new Vue（），即bus也是一个vue实例
+
+第一步：在main.js中创建bus总线
+
+第二步：在子组件A中，通过bus总线抛出信息和值。**this.bus就是Vue实例，$emit也是上面的方法**
+
+第三步：在子组件B中，在created或mounted等生命周期函数上，监听那个事件和获取那个值。
+
+注意：bus总线，是联动的，当A组件触动bus总线的时候，B组件中也会响应式的触发。
+
+B组件中的bus，需要在函数中，比如：created函数、mounted函数、甚至是data函数。
+
+data中：
+
 ### 35.如果一个组件在多个项目中使用怎么办
+
+
 
 ### 36.槽口请简述
 
+**插槽**就是要将父组件中的内容渲染到子组件中。就好像是在子组件中留了一个空的位置（就像小霸王上的插卡口），然后把父组件中的内容插进去（你的游戏卡盘）。
+
+> ​		A.vue把B.vue注册成为新的组件当做标签用，并在B标签中写了一些内容，然后在B.vue中用`<slot></slot>`把A.vue中B标签里的内容渲染出来。
+
+插槽有==三种==：单个(普通)插槽、具名插槽、作用域插槽。
+
+**槽口的作用 :**
+在组件里插入内容,用来混合父组件的内容与子组件自己的模板
+
+**普通槽口:**
+`<slot></slot>`,1个组件只有1个
+
+**具名槽口:**
+带name属性的槽口,`<slot name='slotA'></slot>`1个组件可以有多个,具名槽口将绑定slot属性等于其name的标签
+
+**作用域插槽:**
+
+是为了从父组件中，通过使用注册的子组件标签，并对其属性`slot-scope`进行定义，从而使用子组件中绑定的数据。
+
+**槽口的显示**
+槽口的显示是按照其组件顺序来显示的
+
 ### 37.Watch请简述
 
-### 38.Vantui请简述下
+**watch**主要是用来监听数据变化，通过新数据和旧数据相比较，实时监听数据的变化,也可以监听路由的变化，来执行方法
+
+> 一个对象，键是需要观察的表达式，值是对应回调函数。值也可以是方法名，或者包含选项的对象。Vue 实例将会在实例化时调用 $watch()，遍历 watch 对象的每一个属性。
+
+```js
+data(){
+    return{
+        pageNo: 1,
+    }
+}
+watch:{
+     pageNo: function(oldVal, newVal) {
+        //之前的数据
+        console.log("oldVal");
+        //变化之后的数据
+        console.log("newVal");    
+        if(oldVal !=newVal){
+            //执行的
+        }
+    }
+}
+```
+
+### 38.Vant ui请简述下
+
+
+
+
 
 ### 39.计算属性与watch区别
 
+1. **computed**计算属性是依赖的值改变会重新执行函数，计算属性是取返回值作为最新结果，所以里面不能异步的返回结果。不能写异步逻辑。具有缓存能力，所以只有当数据再次改变时才会重新渲染，否则就会直接拿取缓存中的数据。
+2. **watch**侦听属性是侦听的值改变会重新执行函数，将一个值重新赋值作为最新结果，所以赋值的时候可以进行一些异步操作。
+
+| **计算属性（computed）**                     | **属性检测（watch）**          |
+| -------------------------------------------- | ------------------------------ |
+| 首次运行                                     | 首次不运行                     |
+| 调用时需要在模板中渲染，修改计算所依赖元数据 | 调用时只需修改元数据           |
+| 默认深度依赖                                 | 默认浅度观测                   |
+| 适合做筛选，不可异步                         | 适合做执行异步或开销较大的操作 |
+
 ### 40.mvvm框架是什么？它和其它框架（jquery）的区别是什么？哪些场景适合？
+
+**(1)mvvm框架是什么？**
+MVVM是Model-View-ViewModel的简写
+Model：模型
+View：视图
+ViewModel：视图模型，连接view和model的桥梁
+通常要实现一个observer观察者，当数据发生变化，ViewModel能够监听到数据的这种变化，然后通知到对应的视图做自动更新，而当用户操作视图，ViewModel 也能监听到视图的变化，然后通知数据做改动，这实际上就实现了数据的双向绑定。
+
+**(2)它和其它框架（jquery）的区别是什么？**
+
+vue数据驱动，通过数据来显示视图层而不是节点操作。
+
+> **vue：**前端js库，是一个精简的MVVM，它专注于MVVM模型的viewModel层，通过双向数据绑定把view和model层连接起来，通过对数据的操作就可以完成对页面视图的渲染；
+> **jquery：**轻量级的js库，在操作思想上： vue是使用数据驱动的方式，通过vue对象将数据和view完全分离开，对数据操 作，不在引用相应的DOM对象，通过vue对象，将数据和相应的DOM对象相互绑定起 来；主要是操作数据基于一种MVVM模式，jQuery是使用选择器（$）选取DOM对象，并对其进行赋值、取值、事件绑定等 操作，主要是操作DOM
+
+**(3)哪些场景适合？**
+
+数据操作比较多的场景，更加便捷
+
+**应用场景的区别：** 
+
+- vue适用的场景：复杂数据操作的后台页面，表单填写页面；
+- jquery适用的场景：比如说一些html5的动画页面，一些需要js来操作页面样式的页面。
+
+> 二者也是可以结合起来一起使用的，vue侧重数据绑定，jquery侧重样式操作， 动画效果等，则会更加高效率的完成业务
 
 ### 41.Vue首屏加载慢的原因，怎么解决的，白屏时间怎么检测，怎么解决白屏问题
 
+**主要原因**是页面在打包后如果不进行相关配置会导致资源文件特别的大，一次想要全部加载完成会特别的耗时。
+
+解决:
+
+**1.使用CDN减小代码体积加快请求速度**
+
+**2.开启gzip压缩**
+
+**3.路由懒加载**
+
+**4.图片放在oss上，不放在项目的assets文件夹下**
+
+**5.去除ScourpMap文件**
+
+**6.压缩代码，移除console.log**
+
+检测：可视化检测   略
+
 ### 42.Vue双数据绑定过程中，这边儿数据改变了怎么通知另一边改变
+
+实现mvvm的双向绑定，是采用==数据劫持结合发布者-订阅者模式==的方式，通过Object.defineProperty()来劫持各个属性的setter，getter，在数据变动时发布消息给订阅者，触发相应的监听回调。就必须要实现以下几点：
+
+1. 实现一个数据监听器Observer，能够对数据对象的所有属性进行监听，如有变动可拿到最新值并通知订阅者
+2. 实现一个指令解析器Compile，对每个元素节点的指令进行扫描和解析，根据指令模板替换数据，以及绑定相应的更新函数
+3. 实现一个Watcher，作为连接Observer和Compile的桥梁，能够订阅并收到每个属性变动的通知，执行指令绑定的相应回调函数，从而更新视图
 
 ### 43.Vuex流程
 
+**Vuex:**公共状态管理；解决多个非父子组件传值麻烦的问题；简单说就是多个页面都能用Vuex中store公共的数据
+
+​		页面通过mapAction异步提交事件到action。action通过commit把对应参数同步提交到mutation。mutation会修改state中对应的值。
+​		最后通过getter把对应值抛出去，在页面的计算属性中，通过mapGetter来动态获取state中的值
+
+> 1. 通过new Vuex.Store()创建一个仓库 state是公共的状态，state--->components渲染页面
+> 2. 在组件内部通过this.$store.state.属性 来调用公共状态中的state，进行页面的渲染。
+> 3. 当组件需要修改数据的时候，必须遵循单向数据流。通过this.$store.dispatch来触发actions中的方法
+> 4. actions中的每个方法都会接受一个对象 这个对象里面有一个commit方法，用来触发mutations里面的方法
+> 5. mutations里面的方法用来修改state中的数据 mutations里面的方法都会接收到2个参数 一个是store中的state,另外一个是需要传递到参数
+> 6. 当mutations中的方法执行完毕后state会发生改变，因为vuex的数据是响应式的 所以组件的状态也会发生改变
+
 ### 44.Vuex怎么请求异步数据
+
+**store.js代码如下:**
+
+```js
+import Vue from 'vue'
+import Vuex from 'vuex'
+import axios from 'axios'
+Vue.use(Vuex)
+export default new Vuex.Store({
+	//状态数据
+	state: {
+		list:['默认为空']
+	},
+	//getters可以认为是store的计算属性
+	getters: {
+		list(state) {
+			return state.list
+		}
+	},
+	//存放同步函数方法
+	mutations: {
+		updateState(state,payload){
+			state.list = payload
+		},
+		setState(state,payload){
+			state.list = payload
+		}
+	},
+	//存放异步函数方法
+	actions: {
+		//async异步
+		async getTodos({commit}) {
+			const result = await axios.get('http://jsonplaceholder.typicode.com/todos?_limit=10');
+			commit('updateState', result.data);
+		},
+		//Promise异步
+		fetchTodos({commit}, params) {
+			return new Promise((resolve, reject) => {
+				fetch('http://jsonplaceholder.typicode.com/todos?_limit=5')
+					.then(res => res.json())
+					.then(data => {
+						commit('setState', data)
+						reject(data)
+					})
+					.catch(err => reject(err));	//抛出错误回调
+			});
+		}
+		
+	}
+})
+```
+
+```
+<template>
+  <div id="app">
+		<!-- 匹配到的路由组件 -->
+		<!-- <router-view /> -->
+		<h1>下面是store内异步获取的数据</h1>
+		<h2>{{list}}</h2>
+		<h1> 
+			<input type="button" value="同步方法改变数据1" @click="updateState(11111)">
+			<input type="button" value="同步方法改变数据2" @click="setState(2222222)">
+			<input type="button" value="异步方法获取数据1" @click="getTodos()">
+			<input type="button" value="异步方法获取数据2" @click="fetchTodos()">
+		</h1>
+  </div>
+</template>
+
+<script>
+//导入vuex辅助函数
+import {mapState,mapGetters,mapMutations,mapActions} from 'vuex'
+export default {
+  name: 'app',
+	//这里面存放数据
+	data(){
+		return{
+		}
+	},
+	//获取计算数据
+	computed: mapGetters(['list']),
+	methods:{
+		//获取store内同步方法
+		...mapMutations(['updateState','setState']),
+		//获取store内异步方法
+		...mapActions(['getTodos','fetchTodos'])
+	},
+}
+</script>
+
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+————————————————
+版权声明：本文为CSDN博主「舜岳」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_41614928/article/details/100051104
+```
+
+**组件App.vue代码如下:**
+
+```js
+<template>
+  <div id="app">
+		<!-- 匹配到的路由组件 -->
+		<!-- <router-view /> -->
+		<h1>下面是store内异步获取的数据</h1>
+		<h2>{{list}}</h2>
+		<h1> 
+			<input type="button" value="同步方法改变数据1" @click="updateState(11111)">
+			<input type="button" value="同步方法改变数据2" @click="setState(2222222)">
+			<input type="button" value="异步方法获取数据1" @click="getTodos()">
+			<input type="button" value="异步方法获取数据2" @click="fetchTodos()">
+		</h1>
+  </div>
+</template>
+
+<script>
+//导入vuex辅助函数
+import {mapState,mapGetters,mapMutations,mapActions} from 'vuex'
+export default {
+  name: 'app',
+	//这里面存放数据
+	data(){
+		return{
+		}
+	},
+	//获取计算数据
+	computed: mapGetters(['list']),
+	methods:{
+		//获取store内同步方法
+		...mapMutations(['updateState','setState']),
+		//获取store内异步方法
+		...mapActions(['getTodos','fetchTodos'])
+	},
+}
+</script>
+
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
 
 ### 45.Vuex中action如何提交给mutation的
 
+action异步请求数据，然后把数据通过调用mutation的方法去改变state里的数据
+
 ### 46.Route与router区别
+
+**(1)router**
+
+是VueRouter的一个对象，通过Vue.use(VueRouter)和VueRouter构造函数得到一个router的实例对象，这个对象中是一个全局的对象，他包含了所有的路由包含了许多关键的对象和属性。
+
+> 举例：history对象
+>
+> `$router.push({path:'home'});`本质是向history栈中添加一个路由，在我们看来是 切换路由，但本质是在添加一个history记录
+>
+> 方法：
+>
+> `$router.replace({path:'home'});`//替换路由，没有历史记录
+
+**(2)route**
+
+是一个跳转的路由对象，每一个路由都会有一个route对象，是一个局部的对象，可以获取对应的name,path,params,query等
+
+> `$route.path` 
+> 字符串，等于当前路由对象的路径，会被解析为绝对路径，如 `"/home/news"` 。
+>
+> `$route.params` 
+> 对象，包含路由中的动态片段和全匹配片段的键值对
+>
+> `$route.query` 
+> 对象，包含路由中查询参数的键值对。例如，对于 `/home/news/detail/01?favorite=yes` ，会得到`$route.query.favorite == 'yes'` 。
+>
+> `$route.router` 
+> 路由规则所属的路由器（以及其所属的组件）。
+>
+> `$route.matched` 
+> 数组，包含当前匹配的路径中所包含的所有片段所对应的配置参数对象。
+>
+> `$route.name` 
+> 当前路径的名字，如果没有使用具名路径，则名字为空。
+>
+> `$route.path, $route.params, $route.name, $route.query`这几个属性很容易理解，主要用于接收路由传递的参数
 
 ### 47.vuex有哪几种状态和属性
 
+有五种,分别是`State` , `Getter` , `Mutation` , `Action` , `Module` (就是mapAction)
+
 ### 48.vuex的State特性是？
+
+state就是存放数据的地方，类似一个仓库 , 特性就是当mutation修改了state的数据的时候，他会动态的去修改所有的调用这个变量的所有组件里面的值（ 若是store中的数据发生改变，依赖这个数据的组件也会发生更新 ）
 
 ### 49.vuex的Getter特性是？
 
+类似`vue`的计算属性，主要用来过滤一些数据。
+
+> `mapgetter`经常在计算属性中被使用
+
 ### 50.vuex的Mutation特性是？
+
+同步执行。修改state数据的唯一途径。直接变更state状态。
+
+> 也就是说，在`mutation`中写上自定义的方法，然后在组件的js中通过`this.$store.commit("自定义的方法名")`就可以更新`store`中的数据和状态
+
+> Action 类似于 mutation，不同在于：
+>
+> - Action 提交的是 mutation，而不是直接变更状态。
+> - Action 可以包含任意异步操作
 
 ### 51.vuex的actions特性是？
 
+是用来处理异步方法的，通过**提交mutations实现**state数据的修改。
+
+> actions里要传入两个参数`context`和`playload`
+>
+> 调用actions的时候，使用`this.$store.dispatch("actionsName",playload)`
+>
+> view 层通过`store.dispath`来分发 action
+
 ### 52.vuex 是什么？怎么使用？哪种功能场景使用它
+
+**vuex**是vue框架中状态管理。
+
+**使用:**在main.js引入store，注入。新建了一个目录store，...export。
+
+> 用来读取的状态集中放在`store`中； 改变状态的方式是提交`mutations`，这是个同步的事物； 异步逻辑应该封装在`action`中。
+
+**应用场景:**单页应用中，组件之间的状态(比如,音乐播放、登录状态、加入购物车等等)。
 
 ### 53.vuex的优势
 
+状态管理工具 核心是响应式的做到数据管理, 一个页面发生数据变化。动态的改变对应的页面
+
+兄弟之间组件有大量通信的，建议一定要用VUEX，不管大项目和小项目
+
 ### 54.Vue路由懒加载（按需加载路由）
 
- 
+**1 . vue异步组件技术 ==== 异步加载** 
+
+>  vue-router配置路由 , 使用vue的异步组件技术 , 可以实现按需加载 . 
+> 但是,这种情况下一个组件生成一个js文件
+
+```js
+/* vue异步组件技术 */
+{ path: '/home',
+  name: 'home',
+  component: resolve => require(['@/components/home'],resolve) },
+```
+
+![image-20210523194626687](images/image-20210523194626687.png)
+
+**2.组件懒加载方案二 路由懒加载(使用import)**
+
+```js
+const 组件名=() => import('组件路径');
+
+// 下面2行代码，没有指定webpackChunkName，每个组件打包成一个js文件。
+
+/* const Home = () => import('@/components/home')
+
+const Index = () => import('@/components/index')
+
+const About = () => import('@/components/about') */
+
+// 下面2行代码，指定了相同的webpackChunkName，会合并打包成一个js文件。把组件按组分块
+
+const Home = () => import(/* webpackChunkName: 'ImportFuncDemo' */ '@/components/home')
+
+const Index = () => import(/* webpackChunkName: 'ImportFuncDemo' */ '@/components/index')
+
+const About = () => import(/* webpackChunkName: 'ImportFuncDemo' */ '@/components/about')
+
+{ path: '/about', component: About }, { path: '/index', component: Index }, { path: '/home', component: Home }
+```
+
+**3.webpack提供的require.ensure()** 
+
+> vue-router配置路由，使用webpack的require.ensure技术，也可以实现按需加载。
+> 这种情况下，多个路由指定相同的chunkName，会合并打包成一个js文件。
+
+```js
+/* 组件懒加载方案三: webpack提供的require.ensure() */
+{
+  path: '/home',
+  name: 'home',
+  component: r => require.ensure([], () => r(require('@/components/home')), 'demo')
+}, {
+  path: '/index',
+  name: 'Index',
+  component: r => require.ensure([], () => r(require('@/components/index')), 'demo')
+}, {
+  path: '/about',
+  name: 'about',
+  component: r => require.ensure([], () => r(require('@/components/about')), 'demo-01')
+}
+```
 
 ### 55.v-for与v-if优先级
 
-首先不要把v-if与用在同一个元素上，原因：v-for比v-if优先，如果每一次都需要遍历整个数组，将会影响速度，尤其是当之需要渲染很小一部分的时候。
+**永远不要把 `v-if` 和 `v-for` 同时用在同一个元素上。**
 
-v-for 比 v-if 具有更高的优先级
+1. v-for优先于v-if被解析。
+2. 如果同时出现，每次渲染都会先执行循环再判断条件，无论如何循环都不可避免，浪费了性能。
+3. 要避免上面出现的这种情况，则在外层嵌套template，在这一层进行v-if判断，然后在内部进行v-for循环。
+4. 如果条件出现在循环内部，可通过计算属性提前过滤掉那些不需要显示的项。
+
+
 
  

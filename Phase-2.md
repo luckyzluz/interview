@@ -395,9 +395,15 @@ str=JSON.stringify(array);
 
 ### 14.请简述原型/原型链/继承
 
-**原型**：一个可以被复制（或者叫克隆）的一个类，通过复制原型可以创建一个一模一样的新对象，也可以说原型就是一个模板，在设计语言中更准确的说是一个对象模板
+**原型**：**在JavaScript中，每当定义一个函数数据类型(普通函数、类)时候，都会天生自带一个`prototype`属性，这个属性指向函数的原型对象，并且这个属性是一个对象数据类型的值。**
 
-> 在 JavaScript 中，每当定义一个对象（函数也是对象）时候，对象中都会包含一些预定义的属性。其中每个函数对象都有一个prototype 属性，这个属性指向函数的原型对象，使用原型对象的好处是所有对象实例共享它所包含的属性和方法
+让我们用一张图表示构造函数和实例原型之间的关系：
+![](https://img-blog.csdnimg.cn/img_convert/67e633b1b48eb146b188536fa57cbf5f.png)
+
+
+原型对象就相当于一个公共的区域，所有同一个类的实例都可以访问到这个原型对象，我们可以将对象中共有的内容，统一设置到原型对象中。
+
+
 
 **隐式原型(_proto_):**上面说的这个原型是JavaScript中的内置属性[[prototype]]，此属性继承自object对象，在脚本中没有标准的方式访问[[prototype]]，但Firefox、Safari和Chrome在每个对象上都支持一个属性_proto_，隐式原型的作用是用来构成原型链，实现基于原型的继承
 **显示原型(prototype):**每一个函数在创建之后，便会拥有一个prototype属性，这个属性指向函数的原型对象，显示原型的作用是用来实现基于原型的继承与属性的共享
@@ -698,22 +704,94 @@ lessc less文件名.less 生成的css文件名.css
 
 ### 30.For循环与map循环有什么区别
 
+> **for:**遍历对象自身的和继承的可枚举的属性，也就是说会包括那些原型链上的属性。如果想要仅迭代自身的属性，那么在使用 for...in
+>
+> **forEach:**只能遍历数组，不能中断，没有返回值(或认为返回值是undefined)
+> **map:**只能遍历数组，不能中断，返回值是修改后的数组
+
+**forEach和map的区别**
+
+**相同点**
+
+1. 都是循环遍历数组中的每一项
+2. forEach和map方法里每次执行匿名函数都支持3个参数，参数分别是item(当前每一项)，index(索引值)，arr(原数组)
+3. 匿名函数中的this都是指向window
+4. 只能遍历数组,都不会改变原数组
+
+**区别**
 **map方法**
-1.map方法**返回一个新的数组**，数组中的元素为原始数组调用函数处理后的值。
-2.map方法不会对空数组进行检测，map方法不会改变原始数组。
 
+1. map方法**返回一个新的数组**，数组中的元素为原始数组调用函数处理后的值。
+2. map方法不会对空数组进行检测，map方法**不会改变原始数组**。
+3. 浏览器支持：chrome、Safari1.5+、opera都支持，IE9+,
+4. 若arr为空数组，则map方法返回的也是一个空数组。
 
+```js
+array.map(function(item,index,arr){},thisValue)
+
+var arr = [0,2,4,6,8];
+var str = arr.map(function(item,index,arr){
+    console.log(this); //window
+    console.log("原数组arr:",arr); //注意这里执行5次
+    return item/2;
+},this);
+console.log(str);//[0,1,2,3,4]
+```
+
+**forEach方法**
+
+1. forEach方法用来调用数组的每个元素，将元素传给回调函数
+2. forEach对于空数组是不会调用回调函数的。
+3. 无论arr是不是空数组，forEach返回的都是undefined。这个方法只是将数组中的每一项作为callback的参数执行一次。
+
+```js
+Array.forEach(function(item,index,arr){},this)
+var arr = [0,2,4,6,8];
+var sum = 0;
+var str = arr.forEach(function(item,index,arr){
+    sum += item;
+    console.log("sum的值为：",sum); //0 2 6 12 20
+    console.log(this); //window
+},this)
+console.log(sum);//20
+console.log(str); //undefined
+```
 
 ### 31.请写出一个简单的类与继承
 
+```js
+let _this = this; // 声明一个 _this 指向当前的this
+        // 定义一个类名为 myLike 的类
+        class myLike {
+            // 定义一个 JS 构造器
+            constructor(type) {
+                _this.type = type;
+            }
+            // 创建实例方法
+            sayType() {
+                console.log('我喜欢' + _this.type);
+            }
+        }
+        // 创建一个类名为 Programmer 的类的继承 myLike 类
+        class Programmer extends myLike {
+            constructor(type) {
+                // 直接调用父类构造器进行初始化操作
+                super(type);
+            }
+            program() {
+                console.log("我是一个写代码的游戏主播");
+            }
+        }
+        // 测试我刚创建的类
+        var goPlay = new myLike('打游戏'), // 声明一个打游戏的对象
+            writeCode = new Programmer('写代码'); // 声明一个写代码的对象
+        // 开始测试程序结果
+        goPlay.sayType(); // 输出  我喜欢打游戏
+        writeCode.sayType(); // 输出  我喜欢写代码
+        writeCode.program(); // 输出  我是一个写代码的游戏主播
+```
+
 ### 32.同步与异步的区别/阻塞与非阻塞区别
-
-作者：卢毅luis
-链接：https://www.zhihu.com/question/19732473/answer/20851256
-来源：知乎
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
 
 “阻塞”与"非阻塞"与"同步"与“异步"不能简单的从字面理解，提供一个从分布式系统角度的回答。
 **同步与异步**
@@ -741,19 +819,261 @@ lessc less文件名.less 生成的css文件名.css
 
 ### 33.重绘和回流是什么
 
-引起DOM树结构变化，页面布局变化的行为叫回流，且回流一定伴随重绘。
+引起DOM树结构变化，页面布局变化的行为叫**回流**，且回流==一定==伴随重绘。
 
-只是样式的变化，不会引起DOM树变化，页面布局变化的行为叫重绘，且重绘不一定会便随回流。
+只是样式的变化，不会引起DOM树变化，页面布局变化的行为叫**重绘**，且重绘==不一定==会便随回流。
 
 ### 34.http是什么？有什么特点
 
+**超文本** ==传输== ***协议***
 
+特点:
+
+1. 支持客户/服务器模式；
+2. 简单快速；
+3. 灵活；
+4. 无连接；(是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接)
+5. 无状态。(http协议没法保存客户机信息，也就没法区分每次请求的不同之处)
 
 ### 35.HTTP协议和HTTPS区别
 
+1. https协议需要到ca申请证书，一般免费证书较少，因而需要一定费用。
+2. http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
+3. http和https使用的是完全不同的连接方式，用的**端口也不一样**，前者是80，后者是443。
+4. http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。
+
 ### 36.原型和继承，prototype，call和apply继承的区别（第一个参数是相同的，第二个的区别在哪）
 
+**js继承的6种方式**
+
+想要继承，就必须要提供个父类（继承谁，提供继承的属性）
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvOTQwODg0LzIwMTkwNy85NDA4ODQtMjAxOTA3MTcxNjIwNTQyNjctMTIwMDIxMTI3Ni5wbmc?x-oss-process=image/format,png#pic_center)
+
+**1. 原型链继承**
+
+**核心：**
+
+> 将父类的实例作为子类的原型
+
+**特点：**
+
+- 子类的实例也是父类的实例
+- 可以方便的继承父类型的原型中的方法，但是属性的继承无意义
+  **缺点：**
+- 只执行一次，无法给属性传值
+- 属性的继承无意义
+  ![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8xNDU5Mjc5NS02OTY0MWMzNGY1YTUwYmE4LlBORw?x-oss-process=image/format,png#pic_center)
+
+**2.借用构造函数继承**
+
+**核心：**
+
+在子类的内部调用父类，通过call改变父类中this的指向
+等于是复制父类的实例属性给子类
+
+**特点:**
+
+创建子类实例时，可以向父类传递参数
+可以实现多继承
+可以方便的继承父类型的属性，但是无法继承原型中的方法
+**缺点：**
+
+实例并不是父类的实例，只是子类的实例
+无法继承原型中的方法
+无法实现函数复用，每个子类都有父类实例函数的副本，影响性能
+
+**3.组合继承（组合原型链继承和借用构造函数继承）**
+
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvOTQwODg0LzIwMTkwNy85NDA4ODQtMjAxOTA3MTcxNjIxMzcwODQtMTIzNDYyMzEyMC5wbmc?x-oss-process=image/format,png#pic_center)
+
+**核心：**
+
+> 结合了两种模式的优点，传参和复用
+
+**特点：**
+
+- 可以继承父类原型上的属性，可以传参，可复用。
+- 每个新实例引入的构造函数属性是私有的。
+
+**缺点：** 调用了两次父类构造函数（耗内存），子类的构造函数会代替原型上的那个父类构造函数。
+
+**4.原型式继承**
+
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvOTQwODg0LzIwMTkwNy85NDA4ODQtMjAxOTA3MTcxNjIxNDc1OTYtMTM2MzQ4NjU4Ni5wbmc?x-oss-process=image/format,png#pic_center)
+**核心：**
+
+用一个函数包装一个对象，然后返回这个函数的调用，这个函数就变成了个可以随意增添属性的实例或对象。object.create()就是这个原理。
+
+**特点：** 类似于复制一个对象，用函数来包装。
+**缺点：**
+
+所有实例都会继承原型上的属性。
+无法实现复用。（新实例属性都是后面添加的）
+**5.寄生式继承**
+
+**核心**
+就是给原型式继承外面套了个壳子。
+
+**特点：** 没有创建自定义类型，因为只是套了个壳子返回对象（这个），这个函数顺理成章就成了创建的新对象。
+**缺点：** 没用到原型，无法复用。
+
+**6.寄生组合式继承（常用）**
+**核心：**
+
+修复了组合继承的问题
+
+**寄生:**在函数内返回对象然后调用
+**组合:**
+1.函数的原型等于另一个实例。
+2.在函数中用apply或者call引入另一个构造函数，可传参
+
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvOTQwODg0LzIwMTkwNy85NDA4ODQtMjAxOTA3MTcxNjIyMjAyODUtMTQ3ODg4ODkzNi5wbmc?x-oss-process=image/format,png#pic_center)
+
+[call和apply继承的区别](#20.Js中.call()与.apply()区别)
+
 ### 37.数组的方法，字符串的方法，要知道每个的含义，掌握排序和去重的方法
+
+[数组的方法](#10数组方法有哪些请简述)
+
+**字符串的方法：**
+
+**charAt()** 返回指定位置的字符
+
+```js
+console.log(str_two.charAt(2));  //c
+```
+
+**.length** 返回字符串的长度
+
+```js
+console.log(str_two.length);//5
+```
+**charCodeAt():** 返回指定位置的字符 的Unicode编码
+
+```js
+console.log(str_two.charCodeAt(3));//68
+```
+
+**fromCharCode():** 接受一个UniCode编码， 返回对应的字符串
+
+```js
+console.log(String.fromCharCode(68));//D
+```
+
+**replace():** 替换
+
+> 1.想替换哪个字符串，就用哪个字符串来调用
+> 2.参数1是被替换的目标， 参数2是替换的新内容
+> 3.会将替换后的字符串，整体返回
+
+```
+console.log(str_two.replace("a","A"));//AbcDg
+```
+
+**substring()** : 提取 介于两个下标之间的 字符串 包头不包尾 (和数组slice相似)
+
+> 参数1： 开始下标 参数2： 结束下标
+
+```js
+console.log(str_two.substring(0,2));//ab
+```
+
+**substr()**: 可在字符串中 从开始位置截取指定长度的字符串 (和数组splice相似)
+
+> 参数1： 开始位置， 参数2 ： 指定长度
+
+```js
+console.log(str_two.substr(0,3));//abc
+```
+
+**split()**方法: 用于把一个字符串 分割成字符串数组(本质上就是个数组，只是存的都是字符串罢了)
+
+> 参数1 ： 分割的依据
+> 参数2：(可选参数)分割后 返回的长度
+> (超出实际大小，按照实际大小算。 小于实际大小的话，按照指定长度返回，超出的不返回)
+
+```js
+ var s = "Where are you from?"
+ console.log(s.split(" ",2));//["Where", "are"]
+```
+**slice():** 方法 可提取指定范围 的字符串
+
+> 参数1： 开始范围, 参数2： 结束范围 包头不包尾
+
+```js
+console.log(s.slice(0,4)); //wher
+```
+
+**indexOf()**: 方法O可返回指定字符 的对应下标 (首先出现的)
+如果没有 ： 返回 -1
+
+```js
+//   用indexof（）去重：
+     var arr_new= "jintianbucuo";    
+                var arr_two=[];
+                for (var i=0;i<arr_new.length;i++) {
+                     if(arr_two.indexOf(arr_new[i])==-1){
+                           arr_two.push(arr_new[i]);
+                     }
+                }
+                console.log(arr_two.join(""));
+```
+
+**lastIndexOf()**: 返回指定字符 最后出现的位置
+
+```js
+console.log(s.lastIndexOf(' '));//19
+```
+
+需要谁改变，就由谁来调用这个方法
+**toLowerCase() :** 把字符串转换为小写
+
+```js
+console.log(s.toLowerCase());
+```
+
+**toUpperCase() :** 把字符串转换为大写
+
+```js
+ console.log(s.toUpperCase());
+```
+**用splice（）去重：**
+
+```js
+function arr(a){
+           for (var i=0;i<a.length;i++) {
+               for (var j=i+1;j<a.length;j++) {
+                if(a[i]==a[j]){
+                     a.splice(j,1);
+                   --j;
+                   
+               }
+               
+              }
+              
+            } return a;
+        }
+        var d=[4,7,8,4,6,7,2];
+         console.log(arr(d));
+```
+
+**数组的排序：**
+
+```js
+var arr=[4,7,8,6,2];           
+           for (var i=0;i<arr.length;i++) {
+                  for (var j=i+1;j<arr.length;j++) {
+                   if(arr[i]>arr[j]){
+                       var mm=arr[i];
+                        arr[i]=arr[j];
+                        arr[j]=mm;
+                     }      
+                  }
+                   }
+console.log(arr);
+```
+
+
 
 ### 38.箭头函数与普通函数的区别
 
@@ -778,15 +1098,81 @@ lessc less文件名.less 生成的css文件名.css
 
  指由于疏忽或者错误造成程序未能释放已经不再使用的内存，从而造成内存上的浪费。
 
+**原因：**
+
+1） 意外的全局变量引起的内存泄露
+
+2）闭包引起的内存泄露
+
+3）没有清理的DOM元素引用
+
+4）被遗忘的定时器或者回调
+
+5）子元素存在引起的内存泄露
+
+6）IE7/8引用计数使用循环引用产生的问题
+
+**怎样避免内存泄露**
+
+1）减少不必要的全局变量，或者生命周期较长的对象，及时对无用的数据进行垃圾回收；
+
+2）注意程序逻辑，避免“死循环”之类的 ；
+
+3）避免创建过多的对象 原则：不用了的东西要及时归还。
+
 ### 40.你如何对网站的文件和资源进行优化？
+
+1、文件合并（目的是减少http请求）
+
+2、文件压缩，减少文件下载的体积。
+
+3、 使用 CDN （内容分发网络）来托管资源
+
+4、使用缓存。
+
+5、精简优化自己的css和js代码
 
 ### 41.请简述ajax的执行过程 以及常见的HTTP状态码
 
+```js
+//步骤一:创建异步对象
+var xmlHTTP = new XMLHttpRequest();
+//步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
+xmlHTTP.open(method, url, isAsync)
+//步骤三:发送请求
+xmlHTTP.send();
+//步骤四:注册事件 onreadystatechange 状态改变就会调用
+xmlHTTP.onreadystatechange = function () {
+	if (xmlHttp.readyState == 4 && xmlHTTP.status == 200) {
+      //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+       console.log(xmlHTTP.responseText);
+    }
+}
+```
 
+**xmlHttp.readyState的五种状态**
+0 ：请求未初始化，XMLHttpRequest对象已经创建，但还没有调用open()方法。
+
+1 ：请求已建立，已经调用open() 方法，但尚未发送请求。
+
+2 ： 请求已发送，正在处理中（通常现在可以从响应中获取内容头）
+
+3 ： 请求在处理中；通常响应中已有部分数据可用了，但是服务器还没有完成响应的生成。
+
+4 ：响应完成，已经接收到了全部数据，并且连接已经关闭。
+
+**常见的HTTP状态码**
+200 ： OK 客户端请求成功
+400 ： Bad Request 客户端请求有语法错误，不能被服务器所理解
+401 ： Unauthorized 请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用
+403 ： Forbidden 服务器收到请求，但是拒绝提供服务
+404 ： Not Found 请求资源不存在，eg：输入了错误的URL
+500 ： Internal Server Error 服务器发生不可预期的错误
+503 ： Server Unavailable 服务器当前不能处理客户端的请求，一段时间后可能恢复正常
 
 ### 42.预加载和懒加载的区别，预加载在什么时间加载合适
 
- 预加载是指在页面加载完成之前，提前将所需资源下载，之后使用的时候从缓存中调用；懒加载是延迟加载，按照一定的条件或者需求等到满足条件的时候再加载对应的资源
+预加载是指在页面加载完成之前，提前将所需资源下载，之后使用的时候从缓存中调用；懒加载是延迟加载，按照一定的条件或者需求等到满足条件的时候再加载对应的资源
 
 预加载增加了服务器压力，换来的是用户体验的提升，典型例子是在一个图片较多的网页中，如果使用了预加载就可以避免网页加载出来是时，图片的位置一片空白（图片可能还没加载出来），造成不好的用户体验；懒加载的作用减少不要的请求，缓解了服务器压力
 
@@ -803,6 +1189,148 @@ lessc less文件名.less 生成的css文件名.css
 意义：预加载可以说是牺牲服务器前端性能，换取更好的用户体验，这样可以使用户的操作得到最快的反映。
 
 ### 43.Jquery选择器有哪些
+
+1. **jquery基本选择器**
+
+   通过元素<u>id</u>、<u>class</u>和<u>标签名</u>来查找DOM元素。
+
+   `$(" ")`
+
+2. **jquery层次选择器**
+
+   层次选择器通过DOM元素间的层次关系来获取元素
+
+   | `$("form input")`    | 选择所有的form元素中的input元素                              |
+   | -------------------- | ------------------------------------------------------------ |
+   | `$("#main > *")`     | 选择id值为main的所有的子元素                                 |
+   | `$("label + input")` | 选择所有的label元素的下一个input元素节点，经测试选择器返回的是label标签后面直接跟一个input标签的所有input标签元素 |
+   | `$("#prev ~ div")`   | 同胞选择器，该选择器返回的为id为prev的标签元素的所有的属于同一个父元素的div标签 |
+
+   
+
+3. **jquery过滤选择器**
+
+   分为**基本过滤，内容过滤，可见性过滤，属性过滤，子元素过滤和表单对象属性过滤选择器**共六种选择器
+
+   **（1）jquery基本过滤选择器**
+
+   过滤选择器是根据某类过滤规则进行元素的匹配，书写时都以(:)开头；简单过滤选择器是过滤选择器中使用最广泛的一种。
+
+   `$("tr:first")`：选择所有tr元素的第一个
+
+   `$("tr:last")`：选择所有tr元素的最后一个
+
+   `$("input:not(:checked) + span")` ：过滤掉：checked的选择器的所有的input元素
+
+   `$("tr:even")`：选择所有的tr元素的第0，2，4... ...个元素（注意：因为所选择的多个元素时为数组，所以序号是从0开始）
+
+   `$("tr:odd")`：选择所有的tr元素的第1，3，5... ...个元素
+
+   `$("td:eq(2)")`：选择所有的td元素中序号为2的那个td元素
+
+   `$("td:gt(4)")` ：选择td元素中序号大于4的所有td元素
+
+   `$("td:ll(4)")`：选择td元素中序号小于4的所有的td元素
+
+   `$(":header")`：匹配如 h1, h2, h3之类的标题元素.这个是专门用来获取h1,h2这样的标题元素
+
+   `$("div:animated")`：匹配所有正在执行动画效果的元素
+
+   **（2）jquery内容过滤选择器**
+
+   内容过滤选择器的过滤规则主要体现在它所包含的子元素和文本内容上。
+
+   `$("div:contains('John')")` ：选择所有div中含有John文本的元素
+
+   `$("td:empty")` ：选择所有的为空（也不包括文本节点）的td元素的数组
+
+   `$("div:has(p)")` ：选择所有含有p标签的div元素
+
+   `$("td:parent")`：选择所有的以td为父节点的元素数组
+
+   **（3）jquery可见性过滤选择器**
+
+   可见度过滤选择器是根据元素的可见和不可见状态来选择相应的元素。
+
+   `$("div:hidden")`：选择所有的被hidden的div元素
+
+   `$("div:visible")`：选择所有的可视化的div元素
+
+   **（4）jquery属性过滤选择器**
+
+   属性过滤选择器的过滤规则是通过元素的属性来获取相应的元素。
+
+   `$("div[id]")`： 选择所有含有id属性的div元素
+
+   `$("input[name='newsletter']")`：选择所有的name属性等于'newsletter'的input元素
+
+   `$("input[name!='newsletter']")` ：选择所有的name属性不等于'newsletter'的input元素
+
+   `$("input[name^='news']")`： 选择所有的name属性以'news'开头的input元素
+
+   `$("input[name$='news']")` ：选择所有的name属性以'news'结尾的input元素
+
+   `$("input[name*='man']")` ：选择所有的name属性包含'news'的input元素
+
+   **（5）jquery子元素过滤选择器**
+
+   `$("ul li:nth-child(2)")`,`$("ul li:nth-child(odd)")`,`$("ul li:nth-child(3n + 1)")` ：匹配其父元素下的第N个子或奇偶元素.这个选择器和之前说的基础过滤(Basic Filters)中的eq() 有些类似,不同的地方就是前者是从0开始,后者是从1开始。
+
+   `$("div span:first-child")`：返回所有的div元素的第一个子节点的数组
+
+   `$("div span:last-child")`：返回所有的div元素的最后一个节点的数组
+
+   `$("div button:only-child")` ：返回所有的div中只有唯一一个子节点的所有子节点的数组
+
+   **（6） jquery表单对象属性过滤选择器**
+
+   此选择器主要对所选择的表单元素进行过滤。
+
+   `$(":enabled")`：选择所有的可操作的表单元素
+
+   `$(":disabled")`：选择所有的不可操作的表单元素
+
+   `$(":checked")`：选择所有的被checked的表单元素
+
+   `$("select option:selected")`：选择所有的select 的子元素中被selected的元素
+
+   `$("input[@ name =S_03_22]").parent().prev().text()`：选取一个 name 为"S_03_22"的input text框的上一个td的text值
+
+   `$("input[@ name ^='S_']").not("[@ name $='_R']")`：名字以"S_ "开始，并且不是以"_R"结尾的
+
+   `$("input[@ name =radio_01][@checked]").val()`：一个名为 radio_01的radio所选的值
+
+   `$("A B")`：查找A元素下面的所有子节点，包括非直接子节点
+
+   `$("A>B")` ：查找A元素下面的直接子节点
+
+   `$("A+B")` ：查找A元素后面的兄弟节点，包括非直接子节点
+
+   `$("A~B")` ：查找A元素后面的兄弟节点，不包括非直接子节点
+
+4. **jquery表单选择器**
+
+`$(":input")` ：选择所有的表单输入元素，包括input, textarea, select 和 button
+
+`$(":text")` ： 选择所有的text input元素
+
+`$(":password")`： 选择所有的password input元素
+
+`$(":radio")` ：选择所有的radio input元素
+
+`$(":checkbox")` ：选择所有的checkbox input元素
+
+`$(":submit")` ：选择所有的submit input元素
+
+`$(":image")` ： 选择所有的image input元素
+
+`$(":reset")` ：选择所有的reset input元素
+
+`$(":button")` ：选择所有的button input元素
+
+`$(":file")` ：选择所有的file input元素
+
+`$(":hidden")`：选择所有类型为hidden的input元素或表单的隐藏域
 
 ### 44.Jquery插入节点的方法
 

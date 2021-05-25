@@ -56,27 +56,35 @@ CSS盒子模型也叫做框模型，具备内容(content)、填充(padding)、�
 
 ### 4.HTML5新增的内容有哪些
 
-**语义化标签**：header，main，aside，nav，footer，section等
+1. （**语义化标签**）内容元素：header、nav、section、aside、article、footer。
 
-**增强型表单**：password number tel url file range color datatime date time week month 等
+2. **input表单控件**：email、tel、url、number、date、time、month、week、search、color、calendar（日历）、input表单属性(placeholder list datalist min max autofocus等)。
 
-**新的表单属性**：placeholder list datalist min max autofocus等
+3. 用于媒介回放的**video**视频和**audio**音频元素。
 
-**视频音频**：audio video
+4. **本地离线存储**。
 
-**Geolocation**：可以请求用户共享他们的位置
+   （1）localStorage长期存储数据，浏览器关闭后数据不丢失。
 
-**Communication**：跨文档消息通信，可以确保iframe、标签页、窗口间安全地进行跨源通信。
+   （2）sessionStorage的数据在浏览器关闭后自动删除。
 
-**XMLHttpRequest Level2**：改进了跨源XMLHttpRequest和进度事件，XMLHttpRequest Level2通过CORS实现了跨源XMLHttpRequest。跨源HTTP请求包含一个Origin头部，它为服务器提供HTTP请求的源信息。
+5. 新增绘画元素**canvas**（画布）。
 
-**WebSockets**：要连接远程主机，只需新建一个WebSocket实例，提供希望连接的对端URL。
+6. 可伸缩矢量图形**svg**。
 
-**拖放API**：draggable属性、拖放事件(dragstart、drag、dragenter、dragleave、dragover、drap、dragend)、dataTransfer对象
+7. **地理定位**：Geolocation。
 
-**Web Workers API**：Web Workers可以让Web应用程序具备后台处理能力，对多线程的支持性非常好。但是在Web Workers中执行的脚本不能访问该页面的window对象，也就是Web Workers不能直接访问Web页面和DOM API。虽然Web Workers不会导致浏览器UI停止响应，但是仍然会消耗CPU周期，导致系统反应速度变慢。
+8. html5提供的一个JavaScript多线程解决方案**Web Workers**。
 
-**Web Storage API**：sessionStorage(保存在session中，浏览器关闭，数据消失)、localStorage(保存在客户端本地，除非手动删除，否则一直保存)
+9. **websocket**为web应用程序客户端和服务端之间（注意是客户服务端）提供了一种全双工通信机制。
+
+10. **拖放API：**
+
+（1）dragstart：拖动开始。
+
+（2）drag：拖动中。
+
+（3）dragend：拖动结束
 
 ------
 
@@ -114,7 +122,7 @@ CSS盒子模型也叫做框模型，具备内容(content)、填充(padding)、�
 Open 属性默认展开
 ```
 
-**状态交互元素** 
+**状态交互元素**
 
 ```html
 progress元素 ：标签定义运行中的进度(进程)

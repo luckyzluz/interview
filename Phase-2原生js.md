@@ -1,4 +1,4 @@
-### 1.Js基本数据类型有哪些
+## 1.Js基本数据类型有哪些
 
 7种,`Number`、`String`、`Boolean`、`Null`、`undefined`、`object`、`symbol`。
 
@@ -1493,3 +1493,463 @@ let objc=[1,2,3,4]
             console.log(demo([1,2,3,4,[5],[6,7,[8,9,[10,11]]]]))//[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 ```
 
+### 52.区别2种类型的容器
+
+**1).** **数组容器**:用来保存有序的多个数据(如列表数据), 数据的标识是下标,我们通过下标来操作对应的数据
+
+**2).对象容器**:用来保存无序的多个数据,多个数据的标识是属性名,我们通过属性名来操作属性值数据
+
+### 53.说说开发中常用的ES6新语法
+
+**定义变量/常量**: const/let
+**解构赋值**: `let {a, b} = this.props / import {aa} from 'xxx' / function f ({name}) {}`
+**对象的简洁表达**: `{a, b, c () {}}`
+**箭头函数**: 
+   **组件的自定义方法**: `xxx = () => {}`
+   **匿名函数作为实参**
+   **优点**:
+      * 简洁
+            * 没有自己的this,使用引用this查找的是外部this
+**扩展运算符**: ...
+**类**: class/extends/constructor/super
+**ES6模块化**: export/default/import
+**异步**: promise, async/await
+
+### 54.说说你对事件处理机制的理解
+
+**1). DOM事件**
+
+- **绑定事件监听**
+
+  **事件名(类型)**: 只有有限的几个, 不能随便写
+
+  **回调函数**
+
+- **用户操作触发事件(event)**
+
+  **事件名(类型)**
+
+  **数据**
+
+**2). 自定义事件**
+
+- **绑定事件监听**
+
+  **事件名(类型)**: 任意
+
+  **回调函数**: 通过形参接收数据, 在函数体处理事件
+
+- **触发(emit)/分发(dispatch)事件(编码)**
+
+  **事件名(类型)**: 与绑定的事件监听的事件名一致
+
+  **数据**: 会自动传递给回调函数
+
+### 55.async/await?
+
+**1). 作用**
+    简化pormise的使用(不用再使用then()来指定成功或失败的回调函数)
+    以同步编码的方式实现异步流程(没有回调函数)
+**2). 哪里使用await?**
+    在返回promise对象的表达式左侧, 为了直接得到异步返回的结果, 而不是promsie对象
+**3). 哪里使用async?**
+    使用了await的函数定义左侧
+
+### 56.用数组的相关方法实现以下业务需求
+
+> 公司前后招聘了10个员工(性别,年龄, 月薪各不相同),有以下需求
+> 1). 列表显示所有员工的所有信息  `forEach`
+> 2). 对员工进行年薪降序列表显示  `sort()`
+> 3). 得到男员工的总月薪: `reduce()`
+> 4). 查找一个月薪只比12000高一点点的员工: `find()`
+> 5). 查找出所有月薪高于12000的员工: **filter()**
+> 6). 列表显示所有员工的姓名/性别和年薪: `map()`
+
+```js
+const employees = [
+   {name: 'A', sex: '男', age: 21, salary: 10000},
+   {name: 'B', sex: '女', age: 25, salary: 12000},
+   {name: 'C', sex: '男', age: 24, salary: 13000},
+   {name: 'D', sex: '男', age: 24, salary: 12500},
+   {name: 'E', sex: '女', age: 21, salary: 14000},
+   {name: 'F', sex: '男', age: 24, salary: 16000},
+   {name: 'G', sex: '男', age: 23, salary: 9000},
+   {name: 'H', sex: '女', age: 21, salary: 11000},
+   {name: 'I', sex: '男', age: 23, salary: 13200},
+   {name: 'J', sex: '男', age: 23, salary: 15000}
+]
+
+//1). 
+employees.forEach(e => console.log(e))
+//2). 
+employees.sort((e1, e2) => e2.salary-e1.salary)
+//3). 
+employees.reduce((preTotal, e) => preTotal + (e.sex=='男'?e.salary:0), 0)
+//4). 
+employees.find(e => e.salary>1200 && e.salary<1400 && e.sex==='男')
+//5). 
+employees.filter(e => e.salary>1200)
+//6). 
+employees.map(e => ({'姓名/性别': `${e.name}/${e.sex}`, '年薪': e.salary*12}))
+```
+
+### 57.说说你对cookie的理解(分类, 创建, 保存, 使用)
+
+**cookie**由`key`和`value`组成的文本小数据
+**分类**: 会话cookie和持久化cookie
+**由服务器端创建**: `res.cookie(key, value, {maxAge: 1000})`
+**由浏览器端保存**: 浏览器接收到新的cookie会自动保存(内存/文件)
+**使用**: 浏览器发送请求时自动携带对应的cookie, 服务器端通过req读取: `req.cookies.key`
+
+### 58.内存结构图(原型结构图)
+
+```js
+function Foo () {}
+const fn1 = new Foo()
+const fn2 = new Foo()
+const o1 = {}
+const o2 = new Object()
+```
+
+<img src="images/wps1.jpg" alt="img" style="zoom:50%;" />
+
+59.说说你对变量提升与函数提升的理解
+
+**变量提升**: 在变量语句前就可以读取到变量, 值为undefined
+**函数提升**: 在函数定义语句前就可以调用函数
+**原因**: JS引擎在运行全局代码或执行函数前有预处理/解析
+
+### 60.说说原型链的理解
+
+**作用**: 原型链用于查找对象的属性
+**什么**: 实例对象上都会有一个隐式原型属性(__proto__), 它指向的就是原型对象, 而原型对象也有__proto__属性指向它的原型对象
+
+**为什么`__proto__`指向的是原型对象?**
+
+-    构造函数对象上有显式原型属性(`prototype`), 它指向的就是原型对象
+-    实例对象的`__proto__`属性被赋值为构造函数的prototype属性值
+
+### 61.说说你对作用域链的理解
+
+1. **作用**: 作用链用来查找变量
+2. **什么**: 多个由内向外作用域形成的链
+3. **作用域**: 一块代码区域, 分类全局作用域和函数/局部作用域, ES6有了块作用域
+
+### 62.说说你对闭包的理解
+
+1. 如何产生闭包?
+
+   ​	2个函数嵌套
+
+      内部函数引用了外部函数内的局部变量
+
+      执行外部函数
+
+2. 是什么?
+
+      包含了那个局部变量的容器
+
+      它被内部函数对象引用着
+
+3. 作用?
+
+   延长局部变量的生命周期
+
+      使函数外部可以多次间接操作到函数内部的数据
+
+4. 应用?
+
+      循环遍历加监听
+
+      IIFE定义模块
+
+      jQuery内部
+
+5. 代码演示:
+
+```js
+function fn1 () {
+      var a = 2
+      function fn2 () {
+         a++
+         console.log(a)
+      }
+      return fn2
+   }
+   var f = fn1()
+   f()
+   f()
+   f = null
+```
+
+### 63.JS事件循环机制(图)
+
+<img src="images/wps2.jpg" alt="img" style="zoom:50%;" />
+
+### 64.比较函数的call()/apply()/bind()
+
+1. `call(obj, param1, param2)/apply(obj, [[param1, param2])`
+
+   调用/执行函数
+
+   只是强制指定函数中的this为第一个参数指定的对象
+
+   如果函数执行需要传参数, call是依次传递, apply需要封装成数组传递
+
+2. `bind()`
+
+   返回一个新函数, 不会自动执行, 需要手动执行
+
+   强制指定函数中的this为第一个参数指定的对象
+
+   新函数内部会原样调用原函数
+
+### 65.debug调试
+
+1. **调试的目的**
+
+   ​     查找bug: 不断缩小可疑代码的范围
+
+   ​     查看程序的运行流程(用于熟悉新接手项目的代码)
+
+2. **如何开启调试模式**
+
+   ​     添加语debugger句: 程序运行前     此方式用打包后才运行的项目
+
+   ​     添加(打)断点: 程序运行前或者过程中   此方式用运行源码js
+
+3. **如何进行调试操作**
+
+   `resume`: 恢复程序执行(可能执行完或者进入下一个断点处)
+
+   `step ove`: 单步跳转, 尝试执行完当前语句, 进入下一条(如果内部有断点, 自动进入内部断点处)
+
+   `step into`: 跳入, 进入当前调用函数内部
+
+   `step out`: 跳出, 一次性执行完当前函数后面所有语句,并出去
+
+   `deactivate breakpoints`: 使所有断点暂时失效     `call stack`: 显示是程序函数调用的过程
+    `scop`: 当前执行环境对应的作用域中包含的变量数据
+    `breakpoints`: 断点列表
+
+### 66.说说你对回调函数的理解
+
+1. **什么函数才是回调函数**
+
+      你定义的
+
+      你没有直接调用
+
+      它最终执行了
+
+2. **回调函数相关的3个问题**
+
+      什么时候执行
+
+      用来做什么的
+
+      函数中的this是谁
+
+### 67.详细说明如何判断函数中的this
+
+1. **正常情况**: 执行函数的方式决定了函数中的this
+
+      **直接调用**: `fn()`       window
+
+      **new调用**: `new fn()`   新创建的对象 
+
+      **对象调用**: `obj.fn()`   obj对象
+
+      **call/apply调用**: `fn.call(obj)`   第一个参数指定的对象
+
+2. **特别情况**:
+
+   **bind()返回的函数**: `fn2 = fn.bind(obj)` fn2()第一个参数指定的对象
+
+   **箭头函数**: 使用的外部的this(内部没有自己的this) `fn = () => {} fn()`
+
+   **回调函数**
+
+   ​      **定时器回调/ajax回调/数组遍历相关方法回调**: window
+
+   ​      **dom事件监听回调**: dom元素
+
+   ​      **组件生命周期回调**: 组件对象
+
+3. 在开发我们经常会利用**箭头函数/bind()来改变this的指向**
+
+### 68.区别localStorage和sessionStorage, session与cookie
+
+1. **localStorage**: 浏览器端持久化存储, 关闭浏览还存在, 最大5MB(基本没限制了)
+2. **sessionStorage**: 浏览器端内存存储, 关闭浏览器不存在
+3. **session**: 服务器端创建, 服务器端保存, 依赖于cookie
+4. **cookie**: 服务器端创建, 浏览器端保存, 请求携带对应cookie, 长度和数量有限制(4kb)
+
+### 69.关于2个引用变量指向同一个对象的2个问题
+
+1. 2个引用变量指向同个对象, 通过一个引用变量改变对象内部的数据, 另一个引用变量看到的新的
+2. 2个引用变量指向同个对象, 让一个引用变量指向一个新的对象, 另一个引用变量看到的还是原来的对象
+
+### 70.console.log(a.b)的查找流程
+
+1. 先查找a, 沿着作用域链查找, 找不到报错(变量未定义)
+2. 找到后查找对象上的b属性, 查找原型链, 如果找不到返回undefined
+
+### 71.为什么要深拷贝、浅拷贝？
+
+```js
+let a = {age: 1}
+let b = a
+a.age = 2 // 操作a也会影响b
+console.log(b.age) // 2
+//从上述例子中我们可以发现，如果给一个变量赋值一个对象，那么两者的值会是同一个引用，其中一方改变，另一方也会相应改变。
+```
+
+### 72.手写深度克隆
+
+```js
+//深度克隆：对象/数组
+function deepClone(target) {
+    // 1. 初始化变量，获取目标数据的类型
+    let result, targetClass = getTargetClass(target);
+    // 2. 判断目标的类型
+    if(targetClass === 'Object'){ // 对象
+        result = {};
+    }else if(targetClass === 'Array'){  // 数组
+        result = [];
+    }else {
+        return target;
+    }
+    // 3. 遍历目标数据
+    for(let key in target){
+        // 获取每一项值
+        let item = target[key];
+        // 4. 判断每一项数据的类型
+        if(getTargetClass(item) === 'Object' || getTargetClass(item) === 'Array'){
+            // 无论是对象还是数组，都可以result[key]取值
+            // item = {name: 'kobe'}  item[]
+            result[key] = deepClone(item);
+        }else {
+            result[key] = item;
+        }
+    }
+    return result;
+}
+//定义一个判断数据类型的函数
+function getTargetClass(target) {
+    return Object.prototype.toString.call(target).slice(8, -1)
+}
+```
+
+### 73.ES6中共有五种针对对象遍历的方法？
+
+1. `for in`
+       for in 循环遍历对象自身的和继承的可枚举的属性（不含Symbol属性）
+2. `Object.keys(obj)`
+   返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）
+3. `Object.getOwnPropertyNames(obj)`
+   返回一个数组，包含对象自身的所有属性（不含Symbol属性，但包括不可枚举属性）
+4. `Object.getOwnPropertySymbols(obj)`
+   返回一个数组，包含对象自身所有的Symbol属性
+5. `Reflect.ownKeys(obj)`
+   返回一个数组，包含对象自身的所有属性，不论属性名是Symbol或字符串，也不管是否可枚举。
+
+### 74.什么是同源策略？
+
+1. **同源策略**是由Netscape提出的一个著名的安全策略，现在所有支持JavaScript 的浏览器都会使用这个策略。
+2. Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。
+3. 所谓**同源**是指：协议，域名（IP），端口必须要完全相同
+   即：**协议、域名（IP）、端口都相同**，才能算是在同一个域里。
+
+### 75.非同源受到了哪些限制？
+
+1. Cookie不能读取；
+2. DOM无法获得；
+3. Ajax请求不能发送
+
+### 76.JSONP解决跨域
+
+```js
+//1.前端写法
+<body>
+	<button id="btn">按钮</button>
+	<script type="text/javascript">
+		var btn = document.getElementById('btn');
+		btn.onclick = function() {
+			//1. 创建一个script标签
+			var script = document.createElement('script');
+			//2. 设置回调函数
+			window.getData = function(data) {
+				console.log(data); //拿到数据
+			}
+			//3. 设置script标签src属性，填写跨域请求的地址
+			script.src = 'http://localhost:3000/jsonp?callback=getData';
+			//4. 将script标签添加到body中生效
+			document.body.appendChild(script);
+			//5.不影响整体DOM结构，删除script标签
+			document.body.removeChild(script);
+		}
+	</script>
+</body>
+//2.后端写法
+app.get('/jsonp', (req, res) => {
+//解构赋值获取请求参数
+const {callback} = req.query
+//去数据库查找对应数据
+const data = [{name: 'tom', age: 18}, {name: 'jerry', age: 20}];
+res.send(callback + '(' + JSON.stringify(data) + ')');
+})
+```
+
+### 77.Cors解决跨域？
+
+以Node为例：
+`res.set('Access-Control-Allow-Origin', 'http://localhost:63342');`
+
+存在安全问题
+以上两种凡是解决跨域， 第三种使用代理工具 反向代理工具
+
+### 78.函数防抖
+
+```js
+// 防抖（一段时间会等，然后带着一起做了）
+ function debounce(fn, delay){
+     let timerId = null
+     return function(){
+         const context = this
+         if(timerId){window.clearTimeout(timerId)}
+         timerId = setTimeout(()=>{
+             fn.apply(context, arguments)
+             timerId = null
+         },delay)
+     }
+ }
+```
+
+### 79.函数节流
+
+```js
+// 节流（一段时间执行一次之后，就不执行第二次）
+ function throttle(fn, delay){
+     let canUse = true
+     return function(){
+         if(canUse){
+             fn.apply(this, arguments)
+             canUse = false
+             setTimeout(()=>canUse = true, delay)
+         }
+     }
+ }
+```
+
+### 80.手写ajax
+
+```js
+var request = new XMLHttpRequest()
+ request.open('GET', '/a/b/c?name=ff', true);
+ request.onreadystatechange = function () {
+   if(request.readyState === 4 && request.status === 200) {
+     console.log(request.responseText);
+   }};
+ request.send();
+```
